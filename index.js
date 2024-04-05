@@ -1,3 +1,4 @@
+console.info("Iniciando o script Sicoob Zeev");
 const SicoobZeev = {
     validadores: {
         validarCPFCNPJ: function validarCPFCNPJ(documento) {
@@ -12,7 +13,7 @@ const SicoobZeev = {
                     return { tipo: 'PJ', valido: true }
                 }
             }
-            
+
             return { tipo: 'Inválido', valido: false }
         },
 
