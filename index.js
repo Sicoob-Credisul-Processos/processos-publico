@@ -33,9 +33,115 @@ const SicoobZeev = {
         }
     },
     ferramentasHTML: {
-        tabela: {},
+        Alertas: {
+            criarAlertSpam: (idDoInput, mensagem, color) => {
+                apagarAlerta(idDoInput)
+
+                let inputElement = document.getElementById(idDoInput);
+
+                let textoEmbaixo = document.createElement('p');
+                textoEmbaixo.id = `alerta${idDoInput}`
+                textoEmbaixo.style.color = color || "red"
+                textoEmbaixo.style.fontSize = "15px"
+                textoEmbaixo.style.padding = "0px"
+                textoEmbaixo.textContent = mensagem;
+                inputElement.parentNode.appendChild(textoEmbaixo);
+            },
+
+            apagarAlertSpam: (idDoInput) => {
+                let alerta = document.getElementById(`alerta${idDoInput}`)
+
+                if (alerta) alerta.remove()
+            }
+        },
+        tabela: {
+            ocultarTitulosTabelasMultivaloradas: (nomeTabela) => {
+                let tabelasMultivaloradas = document.getElementsByClassName('table-responsive');
+
+                for (let tabelaMultivalorada of tabelasMultivaloradas) {
+
+                    tabelaMultivalorada.style = "padding-top: 20px";
+                    var elementoCaption = tabelaMultivalorada.querySelector('caption');
+
+                    if (elementoCaption && elementoCaption.textContent.trim() === nomeTabela) {
+                        elementoCaption.style.display = 'none';
+                    }
+                }
+            },
+            obterDadosTabelaMultivalorada: (nomeTabela) => {
+                let tables = document.getElementsByTagName('table');
+                let dados = [];
+
+                for (var i = 0; i < tables.length; i++) {
+                    if (tables[i].caption && tables[i].caption.textContent.trim() === nomeTabela) {
+                        let colunasHTML = tables[i].querySelectorAll('tr[class="header"]');
+
+                        const colunas = colunasHTML[0].querySelectorAll('[column-name]')
+
+                        const nomeColunas = []
+
+                        for (let coluna of colunas) {
+                            nomeColunas.push(coluna.getAttribute('column-name'))
+                        }
+
+                        if (nomeColunas.length === 0) {
+                            console.error(`Colunas não encontrada na tabela ${nomeTabela}`);
+                            return dados;
+                        }
+
+                        let linhas = tables[i].querySelectorAll('tr:not([class="header"])');
+
+                        for (let linha of linhas) {
+
+                            let objetoLinha = {};
+                            for (let nomeColuna of nomeColunas) {
+                                let coluna = linha.querySelector('td[column-name="' + nomeColuna + '"]');
+                                let input = coluna.querySelector('input');
+                                if (input) {
+                                    nomeColuna = nomeColuna.replace("col", "")
+                                    objetoLinha[`inp${nomeColuna}`] = input.value;
+                                }
+                            };
+                            dados.push(objetoLinha);
+                        };
+                        return dados;
+                    }
+                }
+
+                console.error(`Tabela com o nome ${nomeTabela} não encontrada`);
+                return dados;
+            },
+
+            obterDadosTabelaMultivaloradaPorColuna: (nomeTabela, idColuna) => {
+                let tables = document.getElementsByTagName('table');
+                idColuna = idColuna.replace("inp", "")
+
+                let dados = [];
+
+
+                for (var i = 0; i < tables.length; i++) {
+                    if (tables[i].caption && tables[i].caption.textContent.trim() === nomeTabela) {
+                        let colunas = tables[i].querySelectorAll('td[column-name="' + `col${idColuna}` + '"]');
+                        if (colunas.length === 0) {
+                            console.error(`Coluna ${idColuna} não encontrada na tabela ${nomeTabela}`);
+                            return dados;
+                        }
+                        colunas.forEach(function (coluna) {
+                            let input = coluna.querySelector('input');
+                            if (input) {
+                                dados.push(input.value);
+                            }
+                        });
+                        return dados; // Retorna os dados uma vez que a coluna é encontrada
+                    }
+                }
+
+                console.error(`Tabela com o nome ${nomeTabela} não encontrada`);
+                return dados; // Retorna uma array vazia se a tabela não for encontrada
+            }
+        },
         campoTexto: {
-             contarCaracteres: (text)=> {
+            contarCaracteres: (text) => {
                 return text.length;
             }
         },
@@ -150,6 +256,25 @@ const SicoobZeev = {
                 }
             }
         },
+        campoSelecaoUnica: {
+            retornarValoresOpcaoSelecionada: (ArrayDeElementId) => {
+
+                let valores = []
+            
+                for (let elementId of ArrayDeElementId) {
+                    elementId = elementId.replace("inp", "")
+
+                    let inputs = document.querySelectorAll('#td1' + elementId + ' input')
+            
+                    inputs.forEach(function (input) {
+                        if (input.checked) {
+                            valores.push(input.value)
+                        }
+                    })
+                }
+                return valores
+            }
+        }
     },
     validadores: {
         validarCPFCNPJ: (documento) => {
