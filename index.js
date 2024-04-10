@@ -30,7 +30,14 @@ const SicoobZeev = {
 
             // Caso nenhum caso corresponda, retorna um array vazio
             return [];
-        }
+        },
+        obterValoresJsonPelaChave: (objeto, chave) => {
+            // Verificar se a chave existe no objeto
+            if (objeto.hasOwnProperty(chave)) {
+                return objeto[chave]; // Retorna o valor se a chave existir
+            } else {
+                return ''; // Retorna vazio se a chave não existir
+            }
     },
     ferramentasHTML: {
         Alertas: {
