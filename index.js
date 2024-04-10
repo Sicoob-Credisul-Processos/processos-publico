@@ -38,6 +38,7 @@ const SicoobZeev = {
             } else {
                 return ''; // Retorna vazio se a chave não existir
             }
+        }
     },
     ferramentasHTML: {
         Alertas: {
@@ -267,12 +268,12 @@ const SicoobZeev = {
             retornarValoresOpcaoSelecionada: (ArrayDeElementId) => {
 
                 let valores = []
-            
+
                 for (let elementId of ArrayDeElementId) {
                     elementId = elementId.replace("inp", "")
 
                     let inputs = document.querySelectorAll('#td1' + elementId + ' input')
-            
+
                     inputs.forEach(function (input) {
                         if (input.checked) {
                             valores.push(input.value)
