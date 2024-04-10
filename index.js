@@ -42,7 +42,7 @@ const SicoobZeev = {
     ferramentasHTML: {
         Alertas: {
             criarAlertSpam: (idDoInput, mensagem, color) => {
-                apagarAlerta(idDoInput)
+                SicoobZeev.ferramentasHTML.Alertas.apagarAlertSpam(idDoInput)
 
                 let inputElement = document.getElementById(idDoInput);
 
