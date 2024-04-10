@@ -1,4 +1,3 @@
-console.info("Iniciando o script Sicoob Zeev");
 const SicoobZeev = {
     geral: {
         obterOpcoesJsonHierarquico: (objetoJson, ...args) => {
@@ -41,6 +40,55 @@ const SicoobZeev = {
         }
     },
     ferramentasHTML: {
+        utils: {
+            AddlinkParaBaixarTodosOsDocumentos: () => {
+                // Seleciona a lista ul com a classe nav-pills
+                const lista = document.querySelector('.nav.nav-pills.flex-column');
+
+                // Cria um novo elemento li
+                const novoItem = document.createElement('li');
+                novoItem.classList.add('nav-item', 'text-nowrap');
+
+                // Cria o conteúdo do novo item
+                const novoLink = document.createElement('a');
+                novoLink.classList.add('nav-link', 'text-dark');
+                novoLink.href = '#containerDownloads'; // Define o href desejado
+                novoLink.textContent = 'Baixar arquivos'; // Define o texto do link
+
+                // Adiciona um evento de clique ao novo link
+                novoLink.addEventListener('click', function (event) {
+                    event.preventDefault(); // Para evitar que o link redirecione
+
+                    // Coloque aqui a lógica que você deseja executar quando o link for clicado
+                    // Por exemplo, chamar a função de download de todos os documentos
+                    downloadTodosDocumentos();
+                });
+
+                // Anexa o link ao novo item e o novo item à lista
+                novoItem.appendChild(novoLink);
+                lista.appendChild(novoItem);
+
+                // Função para simular o download de todos os documentos
+                function downloadTodosDocumentos() {
+                    const elementosComDocument = document.querySelectorAll('a[href*="document/download"]');
+
+                    function dispararEventoCliqueComTimeout(elemento, index) {
+                        setTimeout(() => {
+                            const eventoClique = new MouseEvent('click', {
+                                bubbles: true,
+                                cancelable: true,
+                                view: window
+                            });
+                            elemento.dispatchEvent(eventoClique);
+                        }, index * 1000); // Atraso de 1 segundo entre cada clique
+                    }
+
+                    elementosComDocument.forEach((elemento, index) => {
+                        dispararEventoCliqueComTimeout(elemento, index);
+                    });
+                }
+            }
+        },
         Alertas: {
             criarAlertSpam: (idDoInput, mensagem, color) => {
                 SicoobZeev.ferramentasHTML.Alertas.apagarAlertSpam(idDoInput)
@@ -369,3 +417,13 @@ const SicoobZeev = {
         }
     }
 }
+
+console.info("Iniciando o script Sicoob Zeev");
+
+document.addEventListener("DOMContentLoaded", () => {
+    setTimeout(() => {
+
+        SicoobZeev.ferramentasHTML.utils.AddlinkParaBaixarTodosOsDocumentos();
+
+    }, 200);
+});
