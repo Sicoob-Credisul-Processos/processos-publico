@@ -37,7 +37,100 @@ const SicoobZeev = {
             } else {
                 return ''; // Retorna vazio se a chave não existir
             }
+        },
+        valorEmReaisPorExtenso: (valor) => {
+            // Remover vírgula e converter para número float
+            valor = parseFloat(valor.replace(',', '.'));
+
+            // Verificar se o valor é válido
+            if (isNaN(valor)) {
+                return 'Valor inválido';
+            }
+
+            // Definição das unidades, dezenas e centenas
+            const unidades = ['zero', 'um', 'dois', 'três', 'quatro', 'cinco', 'seis', 'sete', 'oito', 'nove'];
+            const dezenasAteDezenove = ['dez', 'onze', 'doze', 'treze', 'quatorze', 'quinze', 'dezesseis', 'dezessete', 'dezoito', 'dezenove'];
+            const dezenas = ['', '', 'vinte', 'trinta', 'quarenta', 'cinquenta', 'sessenta', 'setenta', 'oitenta', 'noventa'];
+            const centenas = ['', 'cento', 'duzentos', 'trezentos', 'quatrocentos', 'quinhentos', 'seiscentos', 'setecentos', 'oitocentos', 'novecentos'];
+
+            const unidadesSingulares = ['', 'mil', 'milhão', 'bilhão', 'trilhão', 'quadrilhão'];
+            const unidadesPlurais = ['', 'mil', 'milhões', 'bilhões', 'trilhões', 'quadrilhões'];
+
+            // Função para converter valores menores que 1000 em palavras
+            function converterMenorQueMil(numero) {
+                if (numero < 10) {
+                    return unidades[numero];
+                } else if (numero < 20) {
+                    return dezenasAteDezenove[numero - 10];
+                } else if (numero < 100) {
+                    const dezena = Math.floor(numero / 10);
+                    const unidade = numero % 10;
+                    return dezenas[dezena] + (unidade > 0 ? ' e ' + unidades[unidade] : '');
+                } else {
+                    const centena = Math.floor(numero / 100);
+                    const resto = numero % 100;
+                    return centenas[centena] + (resto > 0 ? ' e ' + converterMenorQueMil(resto) : '');
+                }
+            }
+
+            // Função para converter valores maiores em palavras
+            function converterValor(numero) {
+                if (numero < 1000) {
+                    return converterMenorQueMil(numero);
+                }
+
+                let resultado = '';
+                let nivel = 0;
+
+                // Dividir o número por 1000 para converter partes maiores em palavras
+                while (numero > 0) {
+                    const parte = numero % 1000;
+                    numero = Math.floor(numero / 1000);
+
+                    // Se a parte for maior que zero, converte
+                    if (parte > 0) {
+                        const partePorExtenso = converterMenorQueMil(parte);
+
+                        const unidade = (parte === 1) ? unidadesSingulares[nivel] : unidadesPlurais[nivel];
+                        // Adicionar a parte por extenso com o nível correspondente
+                        if (resultado.length > 0) {
+                            let partes = resultado.split(" ").length;
+
+                            if (partes === 2) {
+                                resultado = partePorExtenso + ' ' + unidade + ' e ' + resultado;
+                            } else {
+                                resultado = partePorExtenso + ' ' + unidade + ' ' + resultado;
+                            }
+
+                        } else {
+                            resultado = partePorExtenso + ' ' + unidade;
+                        }
+                    }
+                    nivel++;
+                }
+
+                return resultado.trim();
+            }
+
+            // Converter o valor inteiro e a parte decimal separadamente
+            const parteInteira = Math.floor(valor);
+            const parteDecimal = Math.round((valor - parteInteira) * 100);
+            let resultado
+
+            if (parteInteira > 0 || parteInteira == 0 && parteDecimal == 0) {
+
+                resultado = `${converterValor(parteInteira)} ${parteInteira <= 1 ? 'real' : 'reais'}`;
+
+                if (parteDecimal > 0) {
+                    resultado += ' e ' + converterMenorQueMil(parteDecimal) + ' centavos';
+                }
+            } else {
+                resultado = converterMenorQueMil(parteDecimal) + ' centavos de real';
+            }
+
+            return resultado.charAt(0).toUpperCase() + resultado.slice(1);
         }
+
     },
     ferramentasHTML: {
         utils: {
