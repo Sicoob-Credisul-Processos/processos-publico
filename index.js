@@ -66,6 +66,8 @@ const SicoobZeev = {
                     const dezena = Math.floor(numero / 10);
                     const unidade = numero % 10;
                     return dezenas[dezena] + (unidade > 0 ? ' e ' + unidades[unidade] : '');
+                } else if (numero === 100) {
+                    return 'cem'
                 } else {
                     const centena = Math.floor(numero / 100);
                     const resto = numero % 100;
@@ -93,10 +95,12 @@ const SicoobZeev = {
 
                         const unidade = (parte === 1) ? unidadesSingulares[nivel] : unidadesPlurais[nivel];
                         // Adicionar a parte por extenso com o nível correspondente
+
+
                         if (resultado.length > 0) {
                             let partes = resultado.split(" ").length;
 
-                            if (partes === 2) {
+                            if (partes < 4) {
                                 resultado = partePorExtenso + ' ' + unidade + ' e ' + resultado;
                             } else {
                                 resultado = partePorExtenso + ' ' + unidade + ' ' + resultado;
@@ -122,10 +126,10 @@ const SicoobZeev = {
                 resultado = `${converterValor(parteInteira)} ${parteInteira <= 1 ? 'real' : 'reais'}`;
 
                 if (parteDecimal > 0) {
-                    resultado += ' e ' + converterMenorQueMil(parteDecimal) + ' centavos';
+                    resultado += ' e ' + converterMenorQueMil(parteDecimal) + `${parteDecimal <= 1 ? ' centavo' : ' centavos'}`;
                 }
             } else {
-                resultado = converterMenorQueMil(parteDecimal) + ' centavos de real';
+                resultado = `${converterMenorQueMil(parteDecimal)} ${parteDecimal === 1 ? 'centavo' : 'centavos'} de real`;
             }
 
             return resultado.charAt(0).toUpperCase() + resultado.slice(1);
