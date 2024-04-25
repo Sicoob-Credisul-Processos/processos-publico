@@ -366,7 +366,9 @@ const SicoobZeev = {
                 }
 
                 for (valor of arrayDeValores) {
-                    selectElement.querySelector(`option[value="${valor}"]`).style.display = "inline"; // Exibe os valores presentes no array
+                    const option = selectElement.querySelector(`option[value="${valor}"]`)
+
+                    if (option) option.style.display = "inline"; // Exibe os valores presentes no array
                 }
             },
 
@@ -375,7 +377,9 @@ const SicoobZeev = {
                 let selectElement = document.getElementById(id);
 
                 for (valor of arrayDeValores) {
-                    selectElement.querySelector(`option[value="${valor}"]`).style.display = "none"; // Oculta os valores presentes no array
+                    const option = selectElement.querySelector(`option[value="${valor}"]`)
+
+                    if (option) option.style.display = "none"; // Oculta os valores presentes no array
                 }
             },
 
@@ -393,7 +397,9 @@ const SicoobZeev = {
             excluirValoresNoArray: (id, arrayDeValores) => {
                 let selectElement = document.getElementById(id);
                 for (valor of arrayDeValores) {
-                    selectElement.querySelector(`option[value="${valor}"]`).remove(0); // Remove os valores presentes no array
+                    const option = selectElement.querySelector(`option[value="${valor}"]`)
+
+                    if (option) option.remove(0); // Remove os valores presentes no array
                 }
             },
 
