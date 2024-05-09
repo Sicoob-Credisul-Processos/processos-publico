@@ -224,35 +224,42 @@ const SicoobZeev = {
             obterDadosTabelaMultivalorada: (nomeTabela) => {
                 let tables = document.getElementsByTagName('table');
                 let dados = [];
-
-                for (var i = 0; i < tables.length; i++) {
+            
+                for (let i = 0; i < tables.length; i++) {
                     if (tables[i].caption && tables[i].caption.textContent.trim() === nomeTabela) {
                         let colunasHTML = tables[i].querySelectorAll('tr[class="header"]');
-
+            
                         const colunas = colunasHTML[0].querySelectorAll('[column-name]')
-
+            
                         const nomeColunas = []
-
+            
                         for (let coluna of colunas) {
                             nomeColunas.push(coluna.getAttribute('column-name'))
                         }
-
+            
                         if (nomeColunas.length === 0) {
-                            console.error(`Colunas não encontrada na tabela ${nomeTabela}`);
+                            console.error(`Colunas não encontradas na tabela ${nomeTabela}`);
                             return dados;
                         }
-
+            
                         let linhas = tables[i].querySelectorAll('tr:not([class="header"])');
-
+            
                         for (let linha of linhas) {
-
                             let objetoLinha = {};
                             for (let nomeColuna of nomeColunas) {
                                 let coluna = linha.querySelector('td[column-name="' + nomeColuna + '"]');
                                 let input = coluna.querySelector('input');
+                                let select = coluna.querySelector('select');
+                                let textarea = coluna.querySelector('textarea');
                                 if (input) {
-                                    nomeColuna = nomeColuna.replace("col", "")
+                                    nomeColuna = nomeColuna.replace("col", "");
                                     objetoLinha[`inp${nomeColuna}`] = input.value;
+                                } else if (select) {
+                                    nomeColuna = nomeColuna.replace("col", "");
+                                    objetoLinha[`inp${nomeColuna}`] = select.value;
+                                } else if (textarea) {
+                                    nomeColuna = nomeColuna.replace("col", "");
+                                    objetoLinha[`inp${nomeColuna}`] = textarea.value;
                                 }
                             };
                             dados.push(objetoLinha);
@@ -260,19 +267,17 @@ const SicoobZeev = {
                         return dados;
                     }
                 }
-
+            
                 console.error(`Tabela com o nome ${nomeTabela} não encontrada`);
                 return dados;
             },
-
             obterDadosTabelaMultivaloradaPorColuna: (nomeTabela, idColuna) => {
                 let tables = document.getElementsByTagName('table');
                 idColuna = idColuna.replace("inp", "")
-
+            
                 let dados = [];
-
-
-                for (var i = 0; i < tables.length; i++) {
+            
+                for (let i = 0; i < tables.length; i++) {
                     if (tables[i].caption && tables[i].caption.textContent.trim() === nomeTabela) {
                         let colunas = tables[i].querySelectorAll('td[column-name="' + `col${idColuna}` + '"]');
                         if (colunas.length === 0) {
@@ -281,17 +286,24 @@ const SicoobZeev = {
                         }
                         colunas.forEach(function (coluna) {
                             let input = coluna.querySelector('input');
+                            let select = coluna.querySelector('select');
+                            let textarea = coluna.querySelector('textarea');
                             if (input) {
                                 dados.push(input.value);
+                            } else if (select) {
+                                dados.push(select.value);
+                            } else if (textarea) {
+                                dados.push(textarea.value);
                             }
                         });
                         return dados; // Retorna os dados uma vez que a coluna é encontrada
                     }
                 }
-
+            
                 console.error(`Tabela com o nome ${nomeTabela} não encontrada`);
                 return dados; // Retorna uma array vazia se a tabela não for encontrada
             }
+            
         },
         campoTexto: {
             contarCaracteres: (text) => {
