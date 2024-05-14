@@ -558,7 +558,7 @@ document.addEventListener("DOMContentLoaded", () => {
     setTimeout(() => {
 
         SicoobZeev.ferramentasHTML.utils.AddlinkParaBaixarTodosOsDocumentos();
-        SicoobZeev.ferramentasHTML.utils.ClicarNoBotaoPesquisarDoInputPesquisarPreencher();
+       // SicoobZeev.ferramentasHTML.utils.ClicarNoBotaoPesquisarDoInputPesquisarPreencher();
 
     }, 200);
 });
