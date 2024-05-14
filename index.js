@@ -138,6 +138,25 @@ const SicoobZeev = {
     },
     ferramentasHTML: {
         utils: {
+            ClicarNoBotaoPesquisarDoInputPesquisarPreencher: () => {
+                // Selecionar todos os inputs com a classe form-control-text
+                const inputs = document.querySelectorAll('[data-fieldformat="SEARCH_AND_FILL"]');
+
+                // Adicionar um evento de pressionar tecla para cada input
+                inputs.forEach(function (input) {
+                    input.addEventListener('keypress', function (event) {
+                        // Verificar se a tecla pressionada é Enter (código 13)
+                        if (event.keyCode === 13) {
+                            // Encontrar o botão correspondente
+                            const button = input.parentElement.parentElement.querySelector('button.btn-search-and-fill');
+                            // Clicar no botão se ele existir
+                            if (button) {
+                                button.click();
+                            }
+                        }
+                    });
+                });
+            },
             AddlinkParaBaixarTodosOsDocumentos: () => {
                 // Seleciona a lista ul com a classe nav-pills
                 const lista = document.querySelector('.nav.nav-pills.flex-column');
@@ -224,26 +243,26 @@ const SicoobZeev = {
             obterDadosTabelaMultivalorada: (nomeTabela) => {
                 let tables = document.getElementsByTagName('table');
                 let dados = [];
-            
+
                 for (let i = 0; i < tables.length; i++) {
                     if (tables[i].caption && tables[i].caption.textContent.trim() === nomeTabela) {
                         let colunasHTML = tables[i].querySelectorAll('tr[class="header"]');
-            
+
                         const colunas = colunasHTML[0].querySelectorAll('[column-name]')
-            
+
                         const nomeColunas = []
-            
+
                         for (let coluna of colunas) {
                             nomeColunas.push(coluna.getAttribute('column-name'))
                         }
-            
+
                         if (nomeColunas.length === 0) {
                             console.error(`Colunas não encontradas na tabela ${nomeTabela}`);
                             return dados;
                         }
-            
+
                         let linhas = tables[i].querySelectorAll('tr:not([class="header"])');
-            
+
                         for (let linha of linhas) {
                             let objetoLinha = {};
                             for (let nomeColuna of nomeColunas) {
@@ -267,16 +286,16 @@ const SicoobZeev = {
                         return dados;
                     }
                 }
-            
+
                 console.error(`Tabela com o nome ${nomeTabela} não encontrada`);
                 return dados;
             },
             obterDadosTabelaMultivaloradaPorColuna: (nomeTabela, idColuna) => {
                 let tables = document.getElementsByTagName('table');
                 idColuna = idColuna.replace("inp", "")
-            
+
                 let dados = [];
-            
+
                 for (let i = 0; i < tables.length; i++) {
                     if (tables[i].caption && tables[i].caption.textContent.trim() === nomeTabela) {
                         let colunas = tables[i].querySelectorAll('td[column-name="' + `col${idColuna}` + '"]');
@@ -299,11 +318,11 @@ const SicoobZeev = {
                         return dados; // Retorna os dados uma vez que a coluna é encontrada
                     }
                 }
-            
+
                 console.error(`Tabela com o nome ${nomeTabela} não encontrada`);
                 return dados; // Retorna uma array vazia se a tabela não for encontrada
             }
-            
+
         },
         campoTexto: {
             contarCaracteres: (text) => {
@@ -539,6 +558,7 @@ document.addEventListener("DOMContentLoaded", () => {
     setTimeout(() => {
 
         SicoobZeev.ferramentasHTML.utils.AddlinkParaBaixarTodosOsDocumentos();
+        SicoobZeev.ferramentasHTML.utils.ClicarNoBotaoPesquisarDoInputPesquisarPreencher();
 
     }, 200);
 });
