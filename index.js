@@ -148,8 +148,8 @@ const SicoobZeev = {
                         // Verificar se a tecla pressionada é Enter (código 13)
                         if (event.keyCode === 13) {
                             // Disparar o evento onBlur no campo de entrada
-                            input.blur()
-            
+                            input.change()
+
                             setTimeout(() => {
                                 // Encontrar o botão correspondente
                                 const button = input.parentElement.parentElement.querySelector('button.btn-search-and-fill');
@@ -344,6 +344,20 @@ const SicoobZeev = {
             }
         },
         campoSelecao: {
+            adicionarValorNoSelect: (idSelect, arrayDeValores) => {
+                const select = document.getElementById(idSelect)
+
+                if (select) {
+                    for (let valor of arrayDeValores) {
+                        const novoOption = document.createElement('option')
+
+                        novoOption.value = valor
+                        novoOption.text = valor
+
+                        select.add(novoOption)
+                    }
+                }
+            },
             mostrarCampos: (idCampoSelecao, valoresVisiveis) => {
                 //exemplo (inpCidades, ["Valor A", "Valor B"])
                 var campoSelecao = document.getElementById(idCampoSelecao);
