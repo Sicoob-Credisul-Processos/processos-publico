@@ -148,8 +148,8 @@ const SicoobZeev = {
                         // Verificar se a tecla pressionada é Enter (código 13)
                         if (event.keyCode === 13) {
                             // Disparar o evento onBlur no campo de entrada
-                            input.change()
-
+                            input.blur()
+            
                             setTimeout(() => {
                                 // Encontrar o botão correspondente
                                 const button = input.parentElement.parentElement.querySelector('button.btn-search-and-fill');
