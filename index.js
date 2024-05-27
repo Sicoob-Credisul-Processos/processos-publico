@@ -232,6 +232,16 @@ const SicoobZeev = {
             }
         },
         tabela: {
+            ocultarTabelaPeloNome : (nomeTabela) => {
+                var tables = document.querySelectorAll('table');
+tables.forEach(function(table) {
+    var caption = table.querySelector('caption');
+    if (caption && caption.textContent.trim() === nomeTabela) {
+        // Ocultar a tabela pai
+        table.style.display = 'none';
+    }
+});
+            },
             ocultarTitulosTabelasMultivaloradas: (nomeTabela) => {
                 let tabelasMultivaloradas = document.getElementsByClassName('table-responsive');
 
