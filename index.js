@@ -149,7 +149,7 @@ const SicoobZeev = {
                         if (event.keyCode === 13) {
                             // Disparar o evento onBlur no campo de entrada
                             input.blur()
-            
+
                             setTimeout(() => {
                                 // Encontrar o botão correspondente
                                 const button = input.parentElement.parentElement.querySelector('button.btn-search-and-fill');
@@ -232,15 +232,25 @@ const SicoobZeev = {
             }
         },
         tabela: {
-            ocultarTabelaPeloNome : (nomeTabela) => {
+            ocultarTabelaPeloNome: (nomeTabela) => {
                 var tables = document.querySelectorAll('table');
-tables.forEach(function(table) {
-    var caption = table.querySelector('caption');
-    if (caption && caption.textContent.trim() === nomeTabela) {
-        // Ocultar a tabela pai
-        table.style.display = 'none';
-    }
-});
+                tables.forEach(function (table) {
+                    var caption = table.querySelector('caption');
+                    if (caption && caption.textContent.trim() === nomeTabela) {
+                        // Ocultar a tabela pai
+                        table.style.display = 'none';
+                    }
+                });
+            },
+            mostrarTabelaPeloNome: (nomeTabela) => {
+                var tables = document.querySelectorAll('table');
+                tables.forEach(function (table) {
+                    var caption = table.querySelector('caption');
+                    if (caption && caption.textContent.trim() === nomeTabela) {
+                        // Ocultar a tabela pai
+                        table.style.display = '';
+                    }
+                });
             },
             ocultarTitulosTabelasMultivaloradas: (nomeTabela) => {
                 let tabelasMultivaloradas = document.getElementsByClassName('table-responsive');
