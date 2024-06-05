@@ -232,6 +232,16 @@ const SicoobZeev = {
             }
         },
         tabela: {
+            mapearTabelaMultivalorada: (nomeTabela, novoid = nomeTabela) => {
+                let tables = document.getElementsByTagName('table');
+
+                for (let i = 0; i < tables.length; i++) {
+                    if (tables[i].caption && tables[i].caption.textContent.trim() === nomeTabela) {
+                        tables[i].setAttribute("id", novoid)
+                        Zeev.Form.Functions.Tables.MapTableMult(novoid);
+                    }
+                }
+            },
             ocultarTabelaPeloNome: (nomeTabela) => {
                 var tables = document.querySelectorAll('table');
                 tables.forEach(function (table) {
