@@ -374,10 +374,10 @@ const SicoobZeev = {
             }
         },
         campoSelecao: {
-            adicionarValorNoSelect: (idSelect, arrayDeValores) => {
-                const select = document.getElementById(idSelect)
+            adicionarValorNoSelect: (id, arrayDeValores) => {
+                let selectsElement = document.querySelectorAll(`[id = '${id}']`)
 
-                if (select) {
+                for (let select of selectsElement) {
                     for (let valor of arrayDeValores) {
                         const novoOption = document.createElement('option')
 
@@ -390,107 +390,144 @@ const SicoobZeev = {
             },
             mostrarCampos: (idCampoSelecao, valoresVisiveis) => {
                 //exemplo (inpCidades, ["Valor A", "Valor B"])
-                var campoSelecao = document.getElementById(idCampoSelecao);
-                var opcoes = campoSelecao.querySelectorAll("option");
-
-                for (const opcao of opcoes) {
-                    if (valoresVisiveis.includes(opcao.value)) {
-                        opcao.style.display = ""; // Remove o estilo display: none
-                    } else {
-                        opcao.style.display = "none";
+                let selectsElement = document.querySelectorAll(`[id = '${id}']`)
+                
+                for(let select of selectsElement){
+                    var opcoes = select.querySelectorAll("option");
+    
+                    for (const opcao of opcoes) {
+                        if (valoresVisiveis.includes(opcao.value)) {
+                            opcao.style.display = ""; // Remove o estilo display: none
+                        } else {
+                            opcao.style.display = "none";
+                        }
                     }
                 }
             },
             // Função para mostrar apenas o valor especificado no campo de seleção
             mostrarApenasUmValor: (id, valor) => {
-                let selectElement = document.getElementById(id);
-                let options = selectElement.getElementsByTagName("option");
+                let selectsElement = document.querySelectorAll(`[id = '${id}']`)
 
-                for (let i = 0; i < options.length; i++) {
-                    if (options[i].value == valor) {
-                        options[i].style.display = "block"; // Exibe o valor se for igual ao especificado
-                    } else {
-                        options[i].style.display = "none"; // Oculta os demais valores
+                for (let select of selectsElement) {
+                    let options = select.getElementsByTagName("option");
+    
+                    for (let i = 0; i < options.length; i++) {
+                        if (options[i].value == valor) {
+                            options[i].style.display = "block"; // Exibe o valor se for igual ao especificado
+                        } else {
+                            options[i].style.display = "none"; // Oculta os demais valores
+                        }
                     }
                 }
             },
 
             // Função para mostrar todos os valores no campo de seleção
             mostrarTodosValores: (id) => {
-                let selectElement = document.getElementById(id);
-                let options = selectElement.querySelectorAll('option');
+                let selectsElement = document.querySelectorAll(`[id = '${id}']`)
 
-                for (let i = 0; i < options.length; i++) {
-                    options[i].style.display = "inline"; // Exibe todos os valores
+                for (let select of selectsElement) {
+                    let options = select.querySelectorAll('option');
+    
+                    for (let i = 0; i < options.length; i++) {
+                        options[i].style.display = "inline"; // Exibe todos os valores
+                    }
                 }
             },
 
             // Função para ocultar todos os valores no campo de seleção e limpar a seleção
             ocultarTodosValores: (id) => {
-                let selectElement = document.getElementById(id);
-                let options = selectElement.querySelectorAll('option');
+                let selectsElement = document.querySelectorAll(`[id = '${id}']`)
 
-                for (let i = 0; i < options.length; i++) {
-                    options[i].style.display = "none"; // Oculta todos os valores
+                for (let select of selectsElement) {
+                    let options = select.querySelectorAll('option');
+    
+                    for (let i = 0; i < options.length; i++) {
+                        options[i].style.display = "none"; // Oculta todos os valores
+                    }
+    
+                    select.value = ""; // Limpa a seleção
                 }
-
-                selectElement.value = ""; // Limpa a seleção
             },
 
             // Função para exibir apenas os valores presentes no array no campo de seleção
             exibirValoresDoArray: (id, arrayDeValores) => {
-                let selectElement = document.getElementById(id);
+                let selectsElement = document.querySelectorAll(`[id = '${id}']`)
 
-                for (let i = 0; i < selectElement.options.length; i++) {
-                    selectElement.options[i].style.display = "none"; // Oculta todos os valores
-                }
+                for (let select of selectsElement) {
+                    for (let i = 0; i < select.options.length; i++) {
+                        select.options[i].style.display = "none"; // Oculta todos os valores
+                    }
 
-                for (valor of arrayDeValores) {
-                    const option = selectElement.querySelector(`option[value="${valor}"]`)
+                    for (valor of arrayDeValores) {
+                        const option = select.querySelector(`option[value="${valor}"]`)
 
-                    if (option) option.style.display = "inline"; // Exibe os valores presentes no array
+                        if (option) option.style.display = "inline"; // Exibe os valores presentes no array
+                    }
+
+                    if(!arrayDeValores.includes(select.value)){
+                        select.value = ''
+                    }
                 }
             },
 
             // Função para ocultar os valores que contêm no array no campo de seleção
             ocultarValoresDoArray: (id, arrayDeValores) => {
-                let selectElement = document.getElementById(id);
+                let selectsElement = document.querySelectorAll(`[id = '${id}']`)
 
-                for (valor of arrayDeValores) {
-                    const option = selectElement.querySelector(`option[value="${valor}"]`)
+                for (let select of selectsElement) {
 
-                    if (option) option.style.display = "none"; // Oculta os valores presentes no array
+                    for (valor of arrayDeValores) {
+                        const option = select.querySelector(`option[value="${valor}"]`)
+
+                        if (option) option.style.display = "none"; // Oculta os valores presentes no array
+                    }
                 }
             },
 
             // Função para excluir todos os valores no campo de seleção
             excluirTodosValores: (id) => {
-                let selectElement = document.getElementById(id);
-                let options = selectElement.querySelectorAll('option');
+                let selectsElement = document.querySelectorAll(`[id = '${id}']`)
 
-                for (let i = 0; i < options.length; i++) {
-                    selectElement.remove(0); // Remove todos os valores
+                for (let select of selectsElement) {
+                    let options = select.querySelectorAll('option');
+
+                    for (let i = 0; i < options.length; i++) {
+                        select.remove(0); // Remove todos os valores
+                    }
                 }
             },
 
             // Função para excluir os valores que contêm no array no campo de seleção
             excluirValoresNoArray: (id, arrayDeValores) => {
-                let selectElement = document.getElementById(id);
-                for (valor of arrayDeValores) {
-                    const option = selectElement.querySelector(`option[value="${valor}"]`)
+                let selectsElement = document.querySelectorAll(`[id = '${id}']`)
 
-                    if (option) option.remove(0); // Remove os valores presentes no array
+                for (let select of selectsElement) {
+                    for (valor of arrayDeValores) {
+                        const option = select.querySelector(`option[value="${valor}"]`)
+
+                        if (option) option.remove(0); // Remove os valores presentes no array
+                    }
                 }
             },
 
             // Função para mostrar apenas os valores que contêm o texto especificado no campo de seleção
             mostrarApenasValoresQueContemUmTexto: (id, texto) => {
-                let selectElement = document.getElementById(id);
-                let options = selectElement.querySelectorAll('option');
+                let selectsElement = document.querySelectorAll(`[id = '${id}']`)
+                
+                for (let select of selectsElement) {
+                    const valoresOptions = []
+                    let options = select.querySelectorAll('option');
 
-                for (let i = 0; i < options.length; i++) {
-                    if (!options[i].text.includes(texto)) {
-                        options[i].style.display = "none"; // Oculta os valores que não contêm o texto especificado
+                    for (let i = 0; i < options.length; i++) {
+                        if (!options[i].text.includes(texto)) {
+                            options[i].style.display = "none"; // Oculta os valores que não contêm o texto especificado
+                        }else{
+                            valoresOptions = options[i].value
+                        }
+                    }
+
+                    if(!valoresOptions.includes(select.value)){
+                        select.value = ''
                     }
                 }
             }
