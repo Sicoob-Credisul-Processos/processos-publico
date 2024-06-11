@@ -522,7 +522,7 @@ const SicoobZeev = {
                         if (!options[i].text.includes(texto)) {
                             options[i].style.display = "none"; // Oculta os valores que não contêm o texto especificado
                         }else{
-                            valoresOptions = options[i].value
+                            valoresOptions.push(options[i].value);
                         }
                     }
 
