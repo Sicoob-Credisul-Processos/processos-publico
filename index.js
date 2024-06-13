@@ -388,7 +388,7 @@ const SicoobZeev = {
                     }
                 }
             },
-            mostrarCampos: (idCampoSelecao, valoresVisiveis) => {
+            mostrarCampos: (id, valoresVisiveis) => {
                 //exemplo (inpCidades, ["Valor A", "Valor B"])
                 let selectsElement = document.querySelectorAll(`[id = '${id}']`)
                 
