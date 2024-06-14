@@ -378,13 +378,21 @@ const SicoobZeev = {
                 let selectsElement = document.querySelectorAll(`[id = '${id}']`)
 
                 for (let select of selectsElement) {
+
+                    const selectArray = Array.from(select)
+
                     for (let valor of arrayDeValores) {
-                        const novoOption = document.createElement('option')
 
-                        novoOption.value = valor
-                        novoOption.text = valor
+                        const optionJaExiste = selectArray.find(select => select.value === valor)
 
-                        select.add(novoOption)
+                        if(!optionJaExiste){
+                            const novoOption = document.createElement('option')
+    
+                            novoOption.value = valor
+                            novoOption.text = valor
+    
+                            select.add(novoOption)
+                        }
                     }
                 }
             },
