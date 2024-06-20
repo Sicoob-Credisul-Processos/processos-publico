@@ -133,6 +133,81 @@ const SicoobZeev = {
             }
 
             return resultado.charAt(0).toUpperCase() + resultado.slice(1);
+        },
+        criarTabelaDeVisualizacao: (divPai, dados, titulo, nomesColunas) => {
+            const tituloSemAcento = titulo.normalize('NFD').replace(/[\u0300-\u036f]/g, ""); //retira os acentos do titulo
+            const tituloPorPalavra = tituloSemAcento.split(' '); //separa o titulo por palavras
+
+            // Converte a primeira letra de cada palavra para maiúscula
+            const tituloPorPalavraCamelCase = tituloPorPalavra.map((palavra) => {
+                return palavra.charAt(0).toUpperCase() + palavra.slice(1).toLowerCase();
+            });
+
+            // Junta as palavras novamente em uma única string
+            const tituloCamelCase = tituloPorPalavraCamelCase.join('');
+
+            var novaDiv = document.createElement("div");
+            novaDiv.className = "box spaced padded";
+            novaDiv.id = `divTable${tituloCamelCase}`;
+
+            // Criar um novo elemento h3
+            var novoH3 = document.createElement('h3');
+            novoH3.textContent = titulo;
+            novoH3.style.paddingBottom = "15px"
+            novaDiv.appendChild(novoH3);
+
+            const tabela = document.createElement('table');
+            tabela.style.borderCollapse = 'collapse';
+            tabela.style.width = '100%';
+
+            // Cabeçalho da tabela
+            const cabecalho = tabela.createTHead();
+            const cabecalhoRow = cabecalho.insertRow();
+
+            // Criar as células do cabeçalho baseadas no array de nomes de colunas
+            nomesColunas.forEach(nome => {
+                const cabecalhoCell = cabecalhoRow.insertCell();
+                cabecalhoCell.textContent = nome;
+                cabecalhoCell.style.border = '1px solid #dddddd';
+                cabecalhoCell.style.padding = '8px';
+            });
+
+            // Corpo da tabela
+            const corpo = tabela.createTBody();
+
+            // Preencher corpo da tabela com os dados
+            dados.forEach(objeto => {
+                const linha = corpo.insertRow();
+
+                // Preencher as células da linha com os dados do objeto
+                nomesColunas.forEach(nome => {
+
+                    const nomeSemAcento = nome.normalize('NFD').replace(/[\u0300-\u036f]/g, "");
+                    const nomeColuna = nomeSemAcento.split(' ');
+
+                    // Converte a primeira letra de cada palavra para maiúscula, exceto a primeira palavra
+                    const camelCase = nomeColuna.map((palavra, index) => {
+                        if (index === 0) {
+                            return palavra.toLowerCase(); // A primeira palavra permanece em minúsculas
+                        } else {
+                            return palavra.charAt(0).toUpperCase() + palavra.slice(1).toLowerCase();
+                        }
+                    })
+
+                    // Junta as palavras novamente em uma única string
+                    const nomeChaveObjeto = camelCase.join('');
+
+                    const cell = linha.insertCell();
+                    cell.textContent = objeto[nomeChaveObjeto];
+                    cell.style.border = '1px solid #dddddd';
+                    cell.style.padding = '8px';
+                })
+            })
+
+            novaDiv.appendChild(tabela);
+
+            let boxFrmExecute = document.getElementById(divPai);
+            boxFrmExecute.parentNode.insertBefore(novaDiv, boxFrmExecute.nextSibling);
         }
 
     },
@@ -385,12 +460,12 @@ const SicoobZeev = {
 
                         const optionJaExiste = selectArray.find(select => select.value === valor)
 
-                        if(!optionJaExiste){
+                        if (!optionJaExiste) {
                             const novoOption = document.createElement('option')
-    
+
                             novoOption.value = valor
                             novoOption.text = valor
-    
+
                             select.add(novoOption)
                         }
                     }
@@ -399,10 +474,10 @@ const SicoobZeev = {
             mostrarCampos: (id, valoresVisiveis) => {
                 //exemplo (inpCidades, ["Valor A", "Valor B"])
                 let selectsElement = document.querySelectorAll(`[id = '${id}']`)
-                
-                for(let select of selectsElement){
+
+                for (let select of selectsElement) {
                     var opcoes = select.querySelectorAll("option");
-    
+
                     for (const opcao of opcoes) {
                         if (valoresVisiveis.includes(opcao.value)) {
                             opcao.style.display = ""; // Remove o estilo display: none
@@ -418,7 +493,7 @@ const SicoobZeev = {
 
                 for (let select of selectsElement) {
                     let options = select.getElementsByTagName("option");
-    
+
                     for (let i = 0; i < options.length; i++) {
                         if (options[i].value == valor) {
                             options[i].style.display = "block"; // Exibe o valor se for igual ao especificado
@@ -435,7 +510,7 @@ const SicoobZeev = {
 
                 for (let select of selectsElement) {
                     let options = select.querySelectorAll('option');
-    
+
                     for (let i = 0; i < options.length; i++) {
                         options[i].style.display = "inline"; // Exibe todos os valores
                     }
@@ -448,11 +523,11 @@ const SicoobZeev = {
 
                 for (let select of selectsElement) {
                     let options = select.querySelectorAll('option');
-    
+
                     for (let i = 0; i < options.length; i++) {
                         options[i].style.display = "none"; // Oculta todos os valores
                     }
-    
+
                     select.value = ""; // Limpa a seleção
                 }
             },
@@ -472,7 +547,7 @@ const SicoobZeev = {
                         if (option) option.style.display = "inline"; // Exibe os valores presentes no array
                     }
 
-                    if(!arrayDeValores.includes(select.value)){
+                    if (!arrayDeValores.includes(select.value)) {
                         select.value = ''
                     }
                 }
@@ -521,7 +596,7 @@ const SicoobZeev = {
             // Função para mostrar apenas os valores que contêm o texto especificado no campo de seleção
             mostrarApenasValoresQueContemUmTexto: (id, texto) => {
                 let selectsElement = document.querySelectorAll(`[id = '${id}']`)
-                
+
                 for (let select of selectsElement) {
                     const valoresOptions = []
                     let options = select.querySelectorAll('option');
@@ -529,12 +604,12 @@ const SicoobZeev = {
                     for (let i = 0; i < options.length; i++) {
                         if (!options[i].text.includes(texto)) {
                             options[i].style.display = "none"; // Oculta os valores que não contêm o texto especificado
-                        }else{
+                        } else {
                             valoresOptions.push(options[i].value);
                         }
                     }
 
-                    if(!valoresOptions.includes(select.value)){
+                    if (!valoresOptions.includes(select.value)) {
                         select.value = ''
                     }
                 }
