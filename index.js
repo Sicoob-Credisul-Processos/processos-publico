@@ -209,7 +209,6 @@ const SicoobZeev = {
             let boxFrmExecute = document.getElementById(divPai);
             boxFrmExecute.parentNode.insertBefore(novaDiv, boxFrmExecute.nextSibling);
         }
-
     },
     ferramentasHTML: {
         utils: {
@@ -282,6 +281,24 @@ const SicoobZeev = {
                     elementosComDocument.forEach((elemento, index) => {
                         dispararEventoCliqueComTimeout(elemento, index);
                     });
+                }
+            },
+            adicionarTextoRicoHTML(idDaReferencia, html) {
+                // Encontrar o elemento pelo ID
+                const elemento = document.getElementById(idDaReferencia);
+
+                if (elemento) {
+                    // Criar um novo elemento de parágrafo
+                    const novoParagrafo = document.createElement('p');
+                    // Adicionar o estilo justificado via JavaScript
+                    novoParagrafo.style.textAlign = 'justify';
+                    // Definir o HTML do parágrafo
+                    novoParagrafo.innerHTML = html;
+
+                    // Inserir o novo parágrafo após o elemento encontrado
+                    elemento.insertAdjacentElement('afterend', novoParagrafo);
+                } else {
+                    console.error(`Elemento com ID "${idDaReferencia}" não encontrado.`);
                 }
             }
         },
