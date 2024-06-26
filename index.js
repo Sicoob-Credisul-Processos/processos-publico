@@ -295,6 +295,8 @@ const SicoobZeev = {
                     // Definir o HTML do parágrafo
                     novoParagrafo.innerHTML = html;
 
+                    novoParagrafo.id = `textoRico${idDaReferencia}`
+
                     // Inserir o novo parágrafo após o elemento encontrado
                     elemento.insertAdjacentElement('afterend', novoParagrafo);
                 } else {
