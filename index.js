@@ -656,8 +656,9 @@ const SicoobZeev = {
     },
     validadores: {
         validarCPFCNPJ: (documento) => {
-            documento = documento.replace(/[^\d]/g, '')
 
+            documento = documento.replace(/[^a-zA-Z0-9]/g, '')
+            
             if (documento.length === 11) {
                 if (SicoobZeev.validadores.validarCPF(documento)) {
                     return { tipo: 'PF', valido: true }
