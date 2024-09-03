@@ -523,7 +523,7 @@ const SicoobZeev = {
                         container.style.textAlign = 'center'; // Centralizar o texto dentro do contêiner
 
                         // Iterar sobre as mensagens e adicionar ao contêiner
-                        mensagens.forEach((mensagem, index) => {
+                        mensagensErro.forEach((mensagem, index) => {
                             // Criar um novo elemento de parágrafo para cada mensagem
                             const novoParagrafo = document.createElement('p');
                             novoParagrafo.style.textAlign = 'justify'; // Texto justificado
