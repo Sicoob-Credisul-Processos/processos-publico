@@ -336,6 +336,220 @@ const SicoobZeev = {
                     }
                 }
             },
+            validarTabela: (array, regras, idDaTabela) => {
+                const mensagensErro = []; // Array para armazenar mensagens de erro
+                const valoresVerificados = {}; // Objeto para rastrear valores já verificados
+
+                // Função para formatar o nome do campo, removendo prefixos e adicionando espaços entre palavras
+                const formatarNomeCampo = (campo) => {
+                    const nomeCampo = campo.replace(/^inp/, '');
+                    return nomeCampo
+                        .replace(/([a-z])([A-Z])/g, '$1 $2')
+                        .replace(/^./, (str) => str.toUpperCase());
+                };
+
+                // Função para validar dependências entre campos
+                const validarDependencias = (linha, dependencias, index, campoPrincipal, valorPrincipal) => {
+                    dependencias.forEach((dependencia) => {
+                        const {
+                            campo: campoDependente,           // Campo dependente a ser validado
+                            obrigatorio: obrigatorioDependente, // Indica se o campo dependente é obrigatório
+                            valoresAceitos: valoresDependencia, // Lista de valores aceitos para o campo dependente
+                            obrigatorioTodos,                // Indica se todos os valores devem ser verificados
+                            dependencias: subDependencias,    // Dependências adicionais para validação recursiva
+                        } = dependencia;
+                        const valorDependencia = linha[campoDependente]; // Valor do campo dependente
+                        const nomeDependencia = formatarNomeCampo(campoDependente); // Nome formatado do campo dependente
+
+                        // Chave de verificação única para rastrear valores já verificados
+                        const chaveVerificacao = `${campoPrincipal}-${valorPrincipal}-${campoDependente}`;
+                        if (!valoresVerificados[chaveVerificacao] && Array.isArray(valoresDependencia)) {
+                            valoresVerificados[chaveVerificacao] = new Set(valoresDependencia);
+                        }
+
+                        // Verifica se o campo dependente é obrigatório e está vazio
+                        if (obrigatorioDependente && (!valorDependencia || valorDependencia.trim() === '')) {
+                            mensagensErro.push(`Linha ${index + 1}: O campo "${nomeDependencia}" é obrigatório.`);
+                        }
+
+                        // Verifica se o valor do campo dependente está na lista de valores aceitos, caso seja um objeto
+                        if (
+                            typeof valoresDependencia === 'object' &&
+                            !Array.isArray(valoresDependencia) &&
+                            valoresDependencia[valorPrincipal] &&
+                            valorDependencia &&
+                            !valoresDependencia[valorPrincipal].includes(valorDependencia)
+                        ) {
+                            mensagensErro.push(
+                                `Linha ${index + 1}: O campo "${nomeDependencia}" deve ser um dos valores: "${valoresDependencia[
+                                    valorPrincipal
+                                ].join('", "')}" quando "${formatarNomeCampo(campoPrincipal)}" é "${valorPrincipal}".`
+                            );
+                        }
+
+                        // Verifica se o valor do campo dependente está na lista de valores aceitos, caso seja um array
+                        if (
+                            Array.isArray(valoresDependencia) &&
+                            valorDependencia &&
+                            !valoresDependencia.includes(valorDependencia)
+                        ) {
+                            mensagensErro.push(
+                                `Linha ${index + 1}: O campo "${nomeDependencia}" deve ser um dos valores: "${valoresDependencia.join(
+                                    '", "'
+                                )}" quando "${formatarNomeCampo(campoPrincipal)}" é "${valorPrincipal}".`
+                            );
+                        }
+
+                        // Verifica se todos os valores obrigatórios foram preenchidos
+                        if (
+                            obrigatorioTodos &&
+                            Array.isArray(valoresDependencia) &&
+                            valoresVerificados[chaveVerificacao]
+                        ) {
+                            if (valoresVerificados[chaveVerificacao].has(valorDependencia)) {
+                                valoresVerificados[chaveVerificacao].delete(valorDependencia);
+                            }
+                        }
+
+                        // Recursivamente validar sub-dependências
+                        if (subDependencias && subDependencias.length > 0) {
+                            validarDependencias(linha, subDependencias, index, campoDependente, valorDependencia);
+                        }
+                    });
+                };
+
+                // Função para validar condições baseadas nas regras
+                const validarCondicional = (linha, condicoes, index, qtdDeLinhas) => {
+                    condicoes.forEach((condicao) => {
+                        const { campo, valoresAceitos, obrigatorio, dependencias, obrigatorioTodos } = condicao;
+                        const valorCampo = linha[campo]; // Valor do campo atual
+                        const nomeCampo = formatarNomeCampo(campo); // Nome formatado do campo
+
+                        // Verifica se o campo é obrigatório e está vazio
+                        if (obrigatorio && (!valorCampo || valorCampo.trim() === '')) {
+                            mensagensErro.push(`Linha ${index + 1}: O campo "${nomeCampo}" é obrigatório.`);
+                        }
+
+                        // Verifica se o valor do campo está na lista de valores aceitos
+                        if (Array.isArray(valoresAceitos) && valorCampo && !valoresAceitos.includes(valorCampo)) {
+                            mensagensErro.push(
+                                `Linha ${index + 1}: O campo "${nomeCampo}" deve ser um dos valores: "${valoresAceitos.join('", "')}".`
+                            );
+                        }
+
+                        // Valida dependências se o campo tiver um valor
+                        if (dependencias && valorCampo) {
+                            validarDependencias(linha, dependencias, index, campo, valorCampo);
+                        }
+
+                        // Verifica se todos os valores aceitos estão presentes na primeira linha
+                        if (obrigatorioTodos && index == (qtdDeLinhas - 1)) {
+                            const valoresEncontrados = new Set(array.map(item => item[campo]));
+                            const valoresFaltando = valoresAceitos.filter(valor => !valoresEncontrados.has(valor));
+
+                            if (valoresFaltando.length > 0) {
+                                mensagensErro.push(
+                                    `É necessário que na tabela contenha no campo ${formatarNomeCampo(campo)} os seguintes valores: "${valoresFaltando.join('", "')}".`
+                                );
+                            }
+                        }
+                    });
+                };
+
+                // Itera sobre cada linha do array de dados para validar cada uma
+                array.forEach((linha, index) => {
+                    validarCondicional(linha, regras, index, array.length);
+                });
+
+                // Verifica se há valores obrigatórios que não foram preenchidos após a validação
+                for (const [chave, valoresRestantes] of Object.entries(valoresVerificados)) {
+                    const [campoPrincipal, valorPrincipal, campoDependente] = chave.split('-');
+                    const nomeCampoPrincipal = formatarNomeCampo(campoPrincipal);
+                    const nomeCampoDependente = formatarNomeCampo(campoDependente);
+
+                    let obrigatorioTodos;
+
+                    const regraCorrespondente = regras.find(
+                        (regra) =>
+                            regra.campo === campoPrincipal &&
+                            regra.dependencias?.some(
+                                (dep) => {
+                                    obrigatorioTodos = dep.obrigatorioTodos;
+                                    dep.campo === campoDependente &&
+                                        (dep.obrigatorioTodos || typeof dep.valoresAceitos === 'string');
+                                }
+                            )
+                    );
+
+                    if (valoresRestantes.size > 0 && (!regraCorrespondente || !regraCorrespondente.obrigatorioTodos) && obrigatorioTodos) {
+                        mensagensErro.push(
+                            `Para o valor "${valorPrincipal}" no campo "${nomeCampoPrincipal}", os seguintes valores no campo "${nomeCampoDependente}" são obrigatórios: "${[
+                                ...valoresRestantes,
+                            ].join('", "')}".`
+                        );
+                    }
+                }
+
+                const criarMensagemHTML = (idDaReferencia, mensagensErro) => {
+                    // Encontrar o elemento pelo ID
+                    const elemento = document.getElementById(idDaReferencia);
+                    const containerId = `container-${idDaReferencia}`;
+
+                    // Remover o contêiner existente, se houver
+                    const containerExistente = document.getElementById(containerId);
+                    if (containerExistente) {
+                        containerExistente.remove();
+                    }
+
+                    // Se não houver mensagens, não cria o contêiner
+                    if (!mensagensErro || mensagensErro.length === 0) {
+                        console.log('Nenhuma mensagem para exibir.');
+                        return;
+                    }
+
+                    if (elemento) {
+                        // Criar um contêiner para agrupar todas as mensagens
+                        const container = document.createElement('div');
+                        container.id = containerId; // Atribui um ID ao contêiner para futuras verificações
+                        container.style.border = '2px solid red'; // Borda vermelha ao redor do agrupador
+                        container.style.padding = '10px'; // Espaçamento interno
+                        container.style.borderRadius = '5px'; // Bordas arredondadas
+                        container.style.marginTop = '30px'; // Espaço acima do agrupador
+                        container.style.backgroundColor = '#ffe6e6'; // Fundo levemente avermelhado
+                        container.style.maxWidth = '1300px'; // Largura máxima do contêiner
+                        container.style.wordWrap = 'break-word'; // Quebra de palavras
+                        container.style.marginLeft = 'auto'; // Margem automática para centralizar horizontalmente
+                        container.style.marginRight = 'auto'; // Margem automática para centralizar horizontalmente
+                        container.style.textAlign = 'center'; // Centralizar o texto dentro do contêiner
+
+                        // Iterar sobre as mensagens e adicionar ao contêiner
+                        mensagens.forEach((mensagem, index) => {
+                            // Criar um novo elemento de parágrafo para cada mensagem
+                            const novoParagrafo = document.createElement('p');
+                            novoParagrafo.style.textAlign = 'justify'; // Texto justificado
+                            novoParagrafo.style.color = 'red'; // Texto em vermelho
+                            novoParagrafo.style.fontWeight = 'bold'; // Texto em negrito
+                            novoParagrafo.style.margin = '5px 0'; // Espaço entre as mensagens
+                            novoParagrafo.innerHTML = mensagem;
+
+                            // Atribuir um ID único ao parágrafo, se necessário
+                            novoParagrafo.id = `textoRico${idDaReferencia}-${index + 1}`;
+
+                            // Adicionar o parágrafo ao contêiner
+                            container.appendChild(novoParagrafo);
+                        });
+
+                        // Inserir o contêiner após o elemento encontrado
+                        elemento.insertAdjacentElement('afterend', container);
+                    } else {
+                        console.error(`Elemento com ID "${idDaReferencia}" não encontrado.`);
+                    }
+                }
+
+                criarMensagemHTML(idDaTabela, mensagensErro)
+
+                return mensagensErro.length > 0 ? false : true
+            },
             ocultarTabelaPeloNome: (nomeTabela) => {
                 var tables = document.querySelectorAll('table');
                 tables.forEach(function (table) {
@@ -658,7 +872,7 @@ const SicoobZeev = {
         validarCPFCNPJ: (documento) => {
 
             documento = documento.replace(/[^a-zA-Z0-9]/g, '')
-            
+
             if (documento.length === 11) {
                 if (SicoobZeev.validadores.validarCPF(documento)) {
                     return { tipo: 'PF', valido: true }
