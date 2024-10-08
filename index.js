@@ -275,7 +275,7 @@ const SicoobZeev = {
                                 view: window
                             });
                             elemento.dispatchEvent(eventoClique);
-                        }, index * 1000); // Atraso de 1 segundo entre cada clique
+                        }, index * 1200); // Atraso de 1 segundo entre cada clique
                     }
 
                     elementosComDocument.forEach((elemento, index) => {
