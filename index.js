@@ -957,7 +957,6 @@ const SicoobZeev = {
 
 document.addEventListener("DOMContentLoaded", () => {
     setTimeout(() => {
-        document.querySelector('[alt="Cubo girando e redimensionando-se repetidamente."]')?.setAttribute("src","https://renanbohn07.github.io/imagem/alvo.gif")
         SicoobZeev.ferramentasHTML.utils.AddlinkParaBaixarTodosOsDocumentos();
         SicoobZeev.ferramentasHTML.utils.ClicarNoBotaoPesquisarDoInputPesquisarPreencher();
     }, 200);
