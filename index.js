@@ -236,6 +236,30 @@ const SicoobZeev = {
                     });
                 });
             },
+            createTeamsLink: ()=>{
+// Seleciona o email da div correspondente
+    const emailElement = document.querySelector('.user-content .small').textContent;
+    
+    // Cria a URL do Teams com o email
+    const teamsUrl = `https://teams.microsoft.com/l/chat/0/0?users=${encodeURIComponent(emailElement)}`;
+
+    // Cria o link
+    const linkElement = document.createElement('a');
+    linkElement.href = teamsUrl;
+    linkElement.textContent = "Conversar com o requerente no Teams";
+    linkElement.target = "_blank"; // Abre em uma nova aba
+
+    // Cria uma nova div para o link
+    const divElement = document.createElement('div');
+    divElement.id = 'teams-link';
+
+    // Adiciona o link dentro da div
+    divElement.appendChild(linkElement);
+
+    // Adiciona a nova div com o link no final de .user-content
+    const userContent = document.querySelector('.user-content');
+    userContent.appendChild(divElement);
+},
             AddlinkParaBaixarTodosOsDocumentos: () => {
                 // Seleciona a lista ul com a classe nav-pills
                 const lista = document.querySelector('.nav.nav-pills.flex-column');
@@ -959,5 +983,6 @@ document.addEventListener("DOMContentLoaded", () => {
     setTimeout(() => {
         SicoobZeev.ferramentasHTML.utils.AddlinkParaBaixarTodosOsDocumentos();
         SicoobZeev.ferramentasHTML.utils.ClicarNoBotaoPesquisarDoInputPesquisarPreencher();
+        SicoobZeev.ferramentasHTML.utils.createTeamsLink();
     }, 200);
 });
