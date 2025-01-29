@@ -1014,6 +1014,33 @@ const SicoobZeev = {
 
             return parseInt(digitos.charAt(1)) === resultado
         }
+    },
+    regras: {
+        proibirSubstituicao: () => {
+            const substituindo = document.getElementById("userIsSubstituing")?.value
+
+            if (substituindo === "S") {
+                document.querySelectorAll(".container-task").forEach(el => {
+                    let message = document.createElement("p");
+                    message.textContent = "Esse processo não pode ser aberto por pessoas definidas como substitutas em ausência temporária!";
+
+                    // Estilos da mensagem
+                    message.style.color = "red"; // Cor vermelha para destacar
+                    message.style.fontWeight = "bold"; // Negrito
+                    message.style.fontSize = "24px"; // Aumenta o tamanho da fonte
+                    message.style.fontFamily = "Arial, sans-serif"; // Muda a fonte
+                    message.style.textAlign = "center"; // Centraliza o texto
+                    message.style.position = "absolute"; // Posiciona de forma absoluta
+                    message.style.top = "50%"; // Centraliza verticalmente
+                    message.style.left = "50%"; // Centraliza horizontalmente
+                    message.style.transform = "translate(-50%, -50%)"; // Ajusta para garantir que o texto esteja bem no centro
+                    message.style.zIndex = "9999"; // Coloca a mensagem acima de outros elementos
+
+                    el.style.display = "none"; // Esconde o elemento original
+                    el.parentNode.insertBefore(message, el); // Insere a mensagem no lugar
+                });
+            }
+        }
     }
 }
 
