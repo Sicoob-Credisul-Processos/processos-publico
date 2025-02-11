@@ -367,6 +367,51 @@ const SicoobZeev = {
             }
         },
         Alertas: {
+            toast:(message, type = 'success') => {
+                const toast = document.createElement('div');
+                toast.textContent = message;
+            
+                // Estilos básicos
+                toast.style.position = 'fixed';
+                toast.style.top = '20px';
+                toast.style.left = '50%';
+                toast.style.transform = 'translateX(-50%)';
+                toast.style.padding = '16px 24px';
+                toast.style.borderRadius = '10px';
+                toast.style.fontSize = '18px';
+                toast.style.fontWeight = 'bold';
+                toast.style.color = 'white';
+                toast.style.zIndex = '9999';
+                toast.style.opacity = '1';
+                toast.style.boxShadow = '0px 4px 6px rgba(0, 0, 0, 0.1)';
+                toast.style.transition = 'opacity 0.5s ease-out, transform 0.3s ease-in-out';
+            
+                // Definição de cores conforme o tipo de mensagem
+                switch (type) {
+                    case 'error':
+                        toast.style.background = '#e74c3c'; // Vermelho
+                        break;
+                    case 'warning':
+                        toast.style.background = '#f39c12'; // Laranja
+                        break;
+                    case 'success':
+                    default:
+                        toast.style.background = '#2ecc71'; // Verde
+                        break;
+                }
+            
+                document.body.appendChild(toast);
+            
+                // Remoção suave da notificação
+                setTimeout(() => {
+                    toast.style.opacity = '0';
+                    toast.style.transform = 'translateX(-50%) translateY(-10px)';
+                    setTimeout(() => {
+                        document.body.removeChild(toast);
+                    }, 500);
+                }, 2500);
+            },
+            
             criarAlertSpam: (idDoInput, mensagem, color) => {
                 SicoobZeev.ferramentasHTML.Alertas.apagarAlertSpam(idDoInput)
 
