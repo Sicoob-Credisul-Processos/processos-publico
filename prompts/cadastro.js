@@ -95,6 +95,7 @@ const prompts = {
     }
 
     Regras de extração:
+        - Procure em todas as páginas uma tabela "RENDIMENTOS TRIBUTÁVEIS RECEBIDOS DE PESSOA JURÍDICA PELO TITULAR" que contém a coluna "NOME DA FONTE PAGADORA"
         - O retorno deve ser sempre um array de objetos do tipo Renda[].
         - Apenas rendimentos do CPF titular devem ser considerados.
         - Instituições financeiras (ex.: Sicoob, Bradesco, Itaú, Sicredi, Caixa, BB) devem ser ignoradas, exceto se contiverem 13º salário.
