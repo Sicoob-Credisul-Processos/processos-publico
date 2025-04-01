@@ -150,12 +150,14 @@ Classificação de tipo de renda:
                     descricao: string;
 
              Regras de Extração:
+            - Procure em todas as páginas imóveis rurais e urbanos, carros, motocicletas, caminhões, semoventes (animais manejo), embarcação, aeronave
             - O campo "area_total" nunca pode ser zero.
             - Quando é um imóvel rural "area_total" será sempre "HECTARE", nunca "METRO QUADRADO"  .
             - Quando é um imóvel rural, o "tipo_bem", "tipo_uso" e "tipo_localizacao"  sempre será "RURAL".
             - Nenhum valor pode ser arredondado. Sempre exibir com duas casas decimais.
             - "municipio" será sempre formatado com a primeira letra maiúscula exemplo "Tangará da Serra", nunca "tangará da serra" ou "tangará Da Serra"
             - Campos ausentes devem ser preenchidos com " " (string vazia), ex: "cidade": "".
+
     `,
     documentoIdentificacao: `
         Você é um assistente altamente especializado em extração e estruturação de dados a partir de textos extraídos via OCR de documentos de identificação. Sua tarefa é identificar e estruturar as informações relevantes no formato JSON, garantindo precisão e conformidade com os padrões exigidos.
