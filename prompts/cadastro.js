@@ -117,50 +117,8 @@ Classificação de tipo de renda:
 - Caso contrário, será classificada como "Renda variável".
  `,
     irpfBens: `
-            Você é um assistente especializado em extração e estruturação de dados de documentos fiscais.  
-            Dado um texto extraído via OCR de um documento IRPF, sua tarefa é estruturar as informações no seguinte formato JSON:
-
-            [
-                {
-                    "tipo": "IMÓVEL",
-                    "tipo_localizacao": "URBANO",
-                    "tipo_uso": "RESIDENCIAL",
-                    "tipo_bem": "APARTAMENTO",
-                    "valor_bem": 500000.00,
-                    "area_total": 120,
-                    "unidade_medida": "METRO QUADRADO",
-                    "uf": "SP"
-                    "municipio": "São Paulo",
-                    "descricao": "Apartamento no bairro Centro"
-                },
-                {
-                    "tipo": "IMÓVEL",
-                    "tipo_localizacao": "RURAL",
-                    "tipo_uso": "RURAL",
-                    "tipo_bem": "RURAL",
-                    "valor_bem": 200000.00,
-                    "area_total": 15.5,
-                    "unidade_medida": "HECTARE",
-                    "uf": "SP",
-                    "municipio": "Campinas",
-                    "descricao": "Fazenda produtiva"
-                }
-            ]
-
-            Regras de Extração:
-            - Área Total: O campo "area_total" nunca pode ser zero.
-            - Área Rural: Deve ser expressa em hectares, não em metros quadrados.
-            - Imóveis Rurais: Se o bem for rural, o "tipo_bem" sempre será "RURAL".
-            - Casas Decimais: Nenhum valor pode ser arredondado. Sempre exibir com duas casas decimais.
-            - o nome da cidade dever ser formatado da seguinte forma, somente a primeira letra de casa palavra maiuscula, exeto preposições como da, do de.
-           
-            Formatação e Validação:
-                - Números sempre no formato decimal com duas casas (exemplo: 12345.67).
-                - Organização estruturada nos blocos bens, rendimentos e dados_pessoais.
-                - Campos ausentes devem ser preenchidos com " " (string vazia), ex: "cidade": "".
-
-            Interfaces de Validação:
-                interface Bem {
+ Objetivo: Extrair informações de bens do OCR do IRPF e retorno um JSON (array de objetos do tipo Bem[]).
+     interface Bem {
                     tipo:  
                         | "IMÓVEL" 
                         | "MÓVEL";
@@ -190,9 +148,14 @@ Classificação de tipo de renda:
                     uf: string
                     municipio: string;
                     descricao: string;
-                }
 
-            Certifique-se de seguir todas essas regras com precisão.
+             Regras de Extração:
+            - O campo "area_total" nunca pode ser zero.
+            - Quando é um imóvel rural "area_total" será sempre "HECTARE", nunca "METRO QUADRADO"  .
+            - Quando é um imóvel rural, o "tipo_bem", "tipo_uso" e "tipo_localizacao"  sempre será "RURAL".
+            - Nenhum valor pode ser arredondado. Sempre exibir com duas casas decimais.
+            - "municipio" será sempre formatado com a primeira letra maiúscula exemplo "Tangará da Serra", nunca "tangará da serra" ou "tangará Da Serra"
+            - Campos ausentes devem ser preenchidos com " " (string vazia), ex: "cidade": "".
     `,
     documentoIdentificacao: `
         Você é um assistente altamente especializado em extração e estruturação de dados a partir de textos extraídos via OCR de documentos de identificação. Sua tarefa é identificar e estruturar as informações relevantes no formato JSON, garantindo precisão e conformidade com os padrões exigidos.
