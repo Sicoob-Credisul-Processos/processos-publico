@@ -85,62 +85,36 @@ const prompts = {
             Certifique-se de seguir todas essas regras com precisão.
     `,
     irpfRendimentos: `
-            Você é um assistente especializado em extração e estruturação de dados de documentos fiscais.
-            Os rendimentos serão encontrados na sessão "RENDIMENTOS TRIBUTÁVEIS RECEBIDOS DE PESSOA JURÍDICA PELO TITULAR", na tabela "NOME DA FONTE PAGADORA"
-            Dado um texto extraído via OCR de um documento IRPF, sua tarefa é estruturar as informações no seguinte formato JSON:
+    Objetivo: Extrair informações de rendimentos do OCR do IRPF e formatá-las conforme as regras abaixo.
+Regras de extração:
+- O retorno deve ser sempre um array de objetos do tipo Renda[].
+- Apenas rendimentos do CPF titular devem ser considerados.
+- Instituições financeiras (ex.: Sicoob, Bradesco, Itaú, Sicredi, Caixa, BB) devem ser ignoradas, exceto se contiverem 13º salário.
+- Se o rendimento for proveniente de um CNPJ da FRGS ou INSS, a chave "tipo_renda" deverá ser "APOSENTADORIA".
+- Nenhum valor pode ser arredondado. Sempre exibir duas casas decimais.
+- Se o valor for anual, dividir por 12 para obter o valor mensal.
+- O campo "descricao" deve conter o nome da fonte pagadora conforme extraído do OCR.
+- Campos ausentes devem ser preenchidos com:
+  - "" para strings (ex.: "cidade": "").
+  - 0.00 para valores numéricos.
 
-            [
-                {
-                    "tipo_renda": "SALÁRIO",
-                    "renda_bruta_mensal": 3000.00,
-                    "descricao": "Salário mensal com 13º",
-                    "renda_fixa_variavel": "Renda fixa"
-                }
-            ]
+Classificação de tipo de renda:
+- Se a renda for de um dos tipos abaixo, deve ser classificada como "Renda fixa":
+  - SALÁRIO
+  - PRO-LABORE
+  - APOSENTADORIA
+  - BOLSAS DO GOVERNO
+  - PENSÃO ALIMENTÍCIA
+  - BUREAU EXTERNO
+- Caso contrário, será classificada como "Renda variável".
 
-            Regras de Extração:
-            - Os rendimentos serão retornados sempre em um array, independe se não foi encontrado rendimentos ou se existe apenas 1 rendimento.
-            - Rendimentos Tributáveis de Instituições Financeiras: Não devem ser considerados (Alguns exemplos: Sicoob, Bradesco, Itaú, Sicredi, Caixa, BB).
-            - Salário: Se não houver 13º salário na renda, o comprovante não pode ser considerado como salário.
-            - Aposentadoria: Se o rendimento for de um CNPJ da FRGS ou INSS, classifique como "APOSENTADORIA".
-            - Casas Decimais: Nenhum valor pode ser arredondado. Sempre exibir com duas casas decimais.
-            - Rendimentos que o valor for anual, dividir por 12 para obter o valor mensal.
-            - Rendimentos Aceitos no IRPF, Apenas considerar:
-                - APOSENTADORIA
-                - SALÁRIO
-                - PRO-LABORE
-                - LUCROS E DIVIDENDOS → Classificar como "OUTROS"
-                - APLICAÇÕES FINANCEIRAS
-            - Filtragem de Rendas: Apenas rendimentos do CPF titular devem ser considerados.
-            - Se a renda for dos tipos abaixo vão ser do tipo "Renda fixa" se não vai ser do tipo "Renda variável":
-                - SALÁRIO
-                - PRO-LABORE
-                - APOSENTADORIA
-                - BOLSAS DO GOVERNO
-                - PENSÃO ALIMENTÍCIA
-                - BUREAU EXTERNO
-
-            Formatação e Validação:
-                - Números sempre no formato decimal com duas casas (exemplo: 12345.67).
-                - Organização estruturada nos blocos bens, rendimentos e dados_pessoais.
-                - Campos ausentes devem ser preenchidos com " " (string vazia), ex: "cidade": "".
-
-            Interfaces de Validação:
-                interface Renda {
-                    tipo_renda:
-                        | "APOSENTADORIA"
-                        | "SALÁRIO"
-                        | "PRO-LABORE"
-                        | "OUTROS"
-                        | "APLICAÇÕES FINANCEIRAS";
-                    renda_bruta_mensal: number;
-                    descricao: string
-                    renda_fixa_variavel:
-                        | "Renda variável"
-                        | "Renda fixa"
-                }
-
-            Certifique-se de seguir todas essas regras com precisão.
+Interface de Validação:
+interface Renda {
+    tipo_renda: "APOSENTADORIA" | "SALÁRIO" | "PRO-LABORE" | "OUTROS" | "APLICAÇÕES FINANCEIRAS";
+    renda_bruta_mensal: number;
+    descricao: string;
+    renda_fixa_variavel: "Renda variável" | "Renda fixa";
+}
     `,
     irpfBens: `
             Você é um assistente especializado em extração e estruturação de dados de documentos fiscais.  
