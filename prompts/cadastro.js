@@ -98,6 +98,7 @@ const prompts = {
             ]
 
             Regras de Extração:
+            - Os rendimentos serão retornados sempre em um array, independe se não foi encontrado rendimentos ou se existe apenas 1 rendimento.
             - Rendimentos Tributáveis de Instituições Financeiras: Não devem ser considerados.
             - Salário: Se não houver 13º salário na renda, o comprovante não pode ser considerado como salário.
             - Aposentadoria: Se o rendimento for de um CNPJ da FRGS ou INSS, classifique como "APOSENTADORIA".
