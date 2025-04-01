@@ -95,7 +95,8 @@ const prompts = {
     }
 
     Regras de extração:
-        - Procure em todas as páginas uma tabela "RENDIMENTOS TRIBUTÁVEIS RECEBIDOS DE PESSOA JURÍDICA PELO TITULAR" que contém a coluna "NOME DA FONTE PAGADORA"
+        - Em todos os casos, deve retornar um array JSON de (Renda[])
+        - Procure em todas as páginas uma tabela "RENDIMENTOS TRIBUTÁVEIS RECEBIDOS DE PESSOA JURÍDICA PELO TITULAR" que contém a coluna "NOME DA FONTE PAGADORA", para cada item lido nessa tabela é considerado uma Renda
         - O retorno deve ser sempre um array de objetos do tipo Renda[].
         - Apenas rendimentos do CPF titular devem ser considerados.
         - Instituições financeiras (ex.: Sicoob, Bradesco, Itaú, Sicredi, Caixa, BB) devem ser ignoradas, exceto se contiverem 13º salário.
