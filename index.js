@@ -1,4 +1,4 @@
-const SicoobZeev1 = {
+const SicoobZeev = {
     geral: {
         obterOpcoesJsonHierarquico: (objetoJson, ...args) => {
             // Estrutura do JSON hierárquico
