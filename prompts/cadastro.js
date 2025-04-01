@@ -85,18 +85,26 @@ const prompts = {
             Certifique-se de seguir todas essas regras com precisão.
     `,
     irpfRendimentos: `
-    Objetivo: Extrair informações de rendimentos do OCR do IRPF e formatá-las conforme as regras abaixo.
-Regras de extração:
-- O retorno deve ser sempre um array de objetos do tipo Renda[].
-- Apenas rendimentos do CPF titular devem ser considerados.
-- Instituições financeiras (ex.: Sicoob, Bradesco, Itaú, Sicredi, Caixa, BB) devem ser ignoradas, exceto se contiverem 13º salário.
-- Se o rendimento for proveniente de um CNPJ da FRGS ou INSS, a chave "tipo_renda" deverá ser "APOSENTADORIA".
-- Nenhum valor pode ser arredondado. Sempre exibir duas casas decimais.
-- Se o valor for anual, dividir por 12 para obter o valor mensal.
-- O campo "descricao" deve conter o nome da fonte pagadora conforme extraído do OCR.
-- Campos ausentes devem ser preenchidos com:
-  - "" para strings (ex.: "cidade": "").
-  - 0.00 para valores numéricos.
+    Objetivo: Extrair informações de rendimentos do OCR do IRPF e retorno um JSON (array de objetos do tipo Renda[]).
+
+    interface Renda {
+    tipo_renda: "APOSENTADORIA" | "SALÁRIO" | "PRO-LABORE" | "OUTROS" | "APLICAÇÕES FINANCEIRAS";
+    renda_bruta_mensal: number;
+    descricao: string;
+    renda_fixa_variavel: "Renda variável" | "Renda fixa";
+    }
+
+    Regras de extração:
+        - O retorno deve ser sempre um array de objetos do tipo Renda[].
+        - Apenas rendimentos do CPF titular devem ser considerados.
+        - Instituições financeiras (ex.: Sicoob, Bradesco, Itaú, Sicredi, Caixa, BB) devem ser ignoradas, exceto se contiverem 13º salário.
+        - Se o rendimento for proveniente de um CNPJ da FRGS ou INSS, a chave "tipo_renda" deverá ser "APOSENTADORIA".
+        - Nenhum valor pode ser arredondado. Sempre exibir duas casas decimais.
+        - Se o valor for anual, dividir por 12 para obter o valor mensal.
+        - O campo "descricao" deve conter o nome da fonte pagadora conforme extraído do OCR.
+        - Campos ausentes devem ser preenchidos com:
+                  - "" para strings (ex.: "cidade": "").
+                  - 0.00 para valores numéricos.
 
 Classificação de tipo de renda:
 - Se a renda for de um dos tipos abaixo, deve ser classificada como "Renda fixa":
@@ -107,15 +115,7 @@ Classificação de tipo de renda:
   - PENSÃO ALIMENTÍCIA
   - BUREAU EXTERNO
 - Caso contrário, será classificada como "Renda variável".
-
-Interface de Validação:
-interface Renda {
-    tipo_renda: "APOSENTADORIA" | "SALÁRIO" | "PRO-LABORE" | "OUTROS" | "APLICAÇÕES FINANCEIRAS";
-    renda_bruta_mensal: number;
-    descricao: string;
-    renda_fixa_variavel: "Renda variável" | "Renda fixa";
-}
-    `,
+ `,
     irpfBens: `
             Você é um assistente especializado em extração e estruturação de dados de documentos fiscais.  
             Dado um texto extraído via OCR de um documento IRPF, sua tarefa é estruturar as informações no seguinte formato JSON:
