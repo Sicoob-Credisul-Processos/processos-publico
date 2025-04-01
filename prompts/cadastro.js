@@ -85,7 +85,8 @@ const prompts = {
             Certifique-se de seguir todas essas regras com precisão.
     `,
     irpfRendimentos: `
-            Você é um assistente especializado em extração e estruturação de dados de documentos fiscais.  
+            Você é um assistente especializado em extração e estruturação de dados de documentos fiscais.
+            Os rendimentos serão encontrados na sessão "RENDIMENTOS TRIBUTÁVEIS RECEBIDOS DE PESSOA JURÍDICA PELO TITULAR", na tabela "NOME DA FONTE PAGADORA"
             Dado um texto extraído via OCR de um documento IRPF, sua tarefa é estruturar as informações no seguinte formato JSON:
 
             [
@@ -99,7 +100,7 @@ const prompts = {
 
             Regras de Extração:
             - Os rendimentos serão retornados sempre em um array, independe se não foi encontrado rendimentos ou se existe apenas 1 rendimento.
-            - Rendimentos Tributáveis de Instituições Financeiras: Não devem ser considerados.
+            - Rendimentos Tributáveis de Instituições Financeiras: Não devem ser considerados (Alguns exemplos: Sicoob, Bradesco, Itaú, Sicredi, Caixa, BB).
             - Salário: Se não houver 13º salário na renda, o comprovante não pode ser considerado como salário.
             - Aposentadoria: Se o rendimento for de um CNPJ da FRGS ou INSS, classifique como "APOSENTADORIA".
             - Casas Decimais: Nenhum valor pode ser arredondado. Sempre exibir com duas casas decimais.
