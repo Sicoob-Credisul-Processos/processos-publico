@@ -20,7 +20,7 @@ const prompts = {
                 "uf": "SP",
                 "cidade": "São Paulo"
             }
-
+            Obs. Não traga nenhum texto ou caracter além do objeto JSON.
             Regras de Extração:
             - Casas Decimais: Nenhum valor pode ser arredondado. Sempre exibir com duas casas decimais.
             Formatação e Validação:
@@ -93,7 +93,7 @@ const prompts = {
     descricao: string;
     renda_fixa_variavel: "Renda variável" | "Renda fixa";
     }
-
+    Obs. Não traga nenhum texto ou caracter além do objeto JSON.
     Regras de extração:
         - Em todos os casos, deve retornar um array JSON de (Renda[])
         - Procure em todas as páginas uma tabela "RENDIMENTOS TRIBUTÁVEIS RECEBIDOS DE PESSOA JURÍDICA PELO TITULAR" que contém a coluna "NOME DA FONTE PAGADORA", para cada item lido nessa tabela é considerado uma Renda
@@ -151,6 +151,8 @@ Classificação de tipo de renda:
                     municipio: string;
                     descricao: string;
 
+            Obs. Não traga nenhum texto ou caracter além do objeto JSON.
+
              Regras de Extração:
             - Procure em todas as linhas do array, e encontre bens (Exemplo: imóveis rurais e urbanos, carros, motocicletas, caminhões, semoventes (animais manejo), embarcação, aeronave)
             - Não oculte nenhum bem, traga todos que estiverem no array.
@@ -182,7 +184,9 @@ Classificação de tipo de renda:
             "numero_documento_identificacao": "123456",
             "sexo": "MASCULINO" ou "FEMININO"
         }
-
+        
+        Obs. Não traga nenhum texto ou caracter além do objeto JSON.
+        
         Regras de Extração:
             - Se o documento for uma CNH:
             - O órgão expedidor deve ser "DETRAN".
