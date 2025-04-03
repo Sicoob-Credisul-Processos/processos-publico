@@ -153,6 +153,7 @@ Classificação de tipo de renda:
 
              Regras de Extração:
             - Procure em todas as linhas do array, e encontre bens (Exemplo: imóveis rurais e urbanos, carros, motocicletas, caminhões, semoventes (animais manejo), embarcação, aeronave)
+            - Não oculte nenhum bem, traga todos que estiverem no array.
             - O campo "area_total" nunca pode ser zero.
             - Quando é um imóvel rural "area_total" será sempre "HECTARE", nunca "METRO QUADRADO"  .
             - Quando é um imóvel rural, o "tipo_bem", "tipo_uso" e "tipo_localizacao"  sempre será "RURAL".
