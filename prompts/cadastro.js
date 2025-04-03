@@ -99,7 +99,7 @@ const prompts = {
         - Procure em todas as páginas uma tabela "RENDIMENTOS TRIBUTÁVEIS RECEBIDOS DE PESSOA JURÍDICA PELO TITULAR" que contém a coluna "NOME DA FONTE PAGADORA", para cada item lido nessa tabela é considerado uma Renda
         - O retorno deve ser sempre um array de objetos do tipo Renda[].
         - Apenas rendimentos do CPF titular devem ser considerados.
-        - Instituições financeiras (ex.: Sicoob, Bradesco, Itaú, Sicredi, Caixa, BB) devem ser ignoradas, exceto se contiverem 13º salário.
+        - Instituições financeiras (ex.: Sicoob, Bradesco, Itaú, Sicredi, Caixa, BB, PREV, COOP) devem ser ignoradas, exceto se contiverem 13º salário.
         - Se o rendimento for proveniente de um CNPJ da FRGS ou INSS, a chave "tipo_renda" deverá ser "APOSENTADORIA".
         - Nenhum valor pode ser arredondado. Sempre exibir duas casas decimais.
         - Se o valor for anual, dividir por 12 para obter o valor mensal.
