@@ -85,7 +85,14 @@ const prompts = {
             Certifique-se de seguir todas essas regras com precisão.
     `,
     irpfRendimentos: `
-    Objetivo: Extrair informações de rendimentos do OCR do IRPF e retorno um JSON (array de objetos do tipo Renda[]).
+    Objetivo: Retorne um JSON estruturado com todos os rendimentos citados no OCR.
+    
+    Dicas:
+    - Cada rendimento, é estruturado conforme a interface Renda
+    - Existirão vários rendimentos, logo o retorno será sempre um array de objetos, mesmo que não encontre nenhuma renda.
+    - OCR é um objeto com um array de várias posições, cada posição é uma linha do documento extraído.
+    - Os rendimentos estão listados na tabela que contém uma coluna chamada  "NOME DA FONTE PAGADORA", essa coluna pode aparecer em várias posições      
+
 
     interface Renda {
     tipo_renda: "APOSENTADORIA" | "SALÁRIO" | "PRO-LABORE" | "OUTROS" | "APLICAÇÕES FINANCEIRAS";
@@ -95,14 +102,11 @@ const prompts = {
     }
     Obs. Não traga nenhum texto ou caracter além do objeto JSON.
     Regras de extração:
-        - Em todos os casos, deve retornar um array JSON de (Renda[])
-        - Procure em todas as páginas uma tabela "RENDIMENTOS TRIBUTÁVEIS RECEBIDOS DE PESSOA JURÍDICA PELO TITULAR" que contém a coluna "NOME DA FONTE PAGADORA", para cada item lido nessa tabela é considerado uma Renda
-        - O retorno deve ser sempre um array de objetos do tipo Renda[].
         - Apenas rendimentos do CPF titular devem ser considerados.
         - Instituições financeiras (ex.: Sicoob, Bradesco, Itaú, Sicredi, Caixa, BB, PREV, COOP) devem ser ignoradas, exceto se contiverem 13º salário.
         - Se o rendimento for proveniente de um CNPJ da FRGS ou INSS, a chave "tipo_renda" deverá ser "APOSENTADORIA".
         - Nenhum valor pode ser arredondado. Sempre exibir duas casas decimais.
-        - Se o valor for anual, dividir por 12 para obter o valor mensal.
+        - Dividir o rendimento sempre por 12 para chegar no valor mensal e preecher a chave "renda_bruta_mensal"
         - O campo "descricao" deve conter o nome da fonte pagadora conforme extraído do OCR.
         - Campos ausentes devem ser preenchidos com:
                   - "" para strings (ex.: "cidade": "").
