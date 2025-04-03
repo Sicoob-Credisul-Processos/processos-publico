@@ -119,40 +119,50 @@ Classificação de tipo de renda:
 - Caso contrário, será classificada como "Renda variável".
  `,
     irpfBens: `
-    Você receberá um array de linhas de texto (bensPages) extraídas via OCR de uma declaração de imposto de renda. Seu objetivo é identificar e extrair todos os bens descritos e retornar um array de objetos compatível com a seguinte interface TypeScript:
-interface Bem {
-tipo: "IMÓVEL" | "MÓVEL";
-tipo_localizacao: "RURAL" | "URBANO";
-tipo_uso: "RURAL" | "COMERCIAL" | "INDUSTRIAL" | "RESIDENCIAL";
-tipo_bem: "RURAL" | "LOJA" | "PREDIO" | "SALA" | "TERRENO" | "APARTAMENTO" | "CASA" | "VEÍCULO";
-valor_bem: number;
-area_total: number;
-unidade_medida: "HECTARE" | "METRO QUADRADO" | "";
-uf: string;
-municipio: string;
-descricao: string;
-}
-Siga rigorosamente as regras abaixo para preencher os campos:
-Varredura Completa: percorra todas as linhas do array bensPages. Nenhum bem pode ser omitido.
-Classificação Obrigatória:
-tipo: "IMÓVEL" para imóveis, "MÓVEL" para veículos e outros bens móveis
-tipo_bem: classifique corretamente entre as opções da interface. Caso não seja possível identificar (em bens móveis), use "VEÍCULO" apenas para automóveis e similares
-Área Total:
-area_total nunca deve ser zero
-Imóveis rurais devem ter unidade_medida como "HECTARE"
-Todos os demais imóveis devem ter unidade_medida como "METRO QUADRADO"
-Imóvel Rural: Quando for identificado como rural:
-tipo deve ser "IMÓVEL"
-tipo_uso deve ser "RURAL"
-tipo_localizacao deve ser "RURAL"
-tipo_bem deve ser "RURAL"
-unidade_medida deve ser "HECTARE"
-Bens Móveis Não Classificáveis: Se o bem for móvel (qualquer bem que pode ser transportado sem alterar sua essência) e não puder ser classificado com as opções existentes, os campos tipo, tipo_bem, tipo_localizacao e tipo_uso devem ser preenchidos com null. unidade_medida deve ser ""
-Formatação de Valores: Todos os valores numéricos (valor_bem, area_total) devem ter duas casas decimais, sem arredondamentos.
-Formatação de Texto: O campo municipio deve ser formatado com letras iniciais maiúsculas em cada palavra. Exemplo: "Tangará da Serra".
-Campos Ausentes: Qualquer campo sem valor identificado deve ser preenchido com "" (string vazia), exceto os campos de classificação em bens móveis não identificados, que devem ser null.
-Campo descricao: A propriedade descricao deve conter a descrição mais completa possível do bem, conforme capturado do OCR.
-Retorne somente o array de objetos válidos com os campos definidos acima, sem explicações ou textos extras. Aguarde o array bensPages antes de iniciar a extração.
+ Objetivo: Extrair informações de bens do OCR do IRPF e retorno um JSON (array de objetos do tipo Bem[]).
+     interface Bem {
+                    tipo:  
+                        | "IMÓVEL" 
+                        | "MÓVEL";
+                    tipo_localizacao: 
+                        | "RURAL" 
+                        | "URBANO";
+                    tipo_uso:  
+                        | "RURAL" 
+                        | "COMERCIAL" 
+                        | "INDUSTRIAL" 
+                        | "RESIDENCIAL";
+                    tipo_bem: 
+                        | "RURAL" 
+                        | "LOJA" 
+                        | "PREDIO" 
+                        | "SALA" 
+                        | "TERRENO" 
+                        | "APARTAMENTO" 
+                        | "CASA" 
+                        | "VEÍCULO";
+                    valor_bem: number;
+                    area_total: number;
+                    unidade_medida:    
+                        | "HECTARE"  
+                        | "METRO QUADRADO" 
+                        | "";
+                    uf: string
+                    municipio: string;
+                    descricao: string;
+
+             Regras de Extração:
+            - Procure em todas as linhas do array, e encontre bens (Exemplo: imóveis rurais e urbanos, carros, motocicletas, caminhões, semoventes (animais manejo), embarcação, aeronave)
+            - Não oculte nenhum bem, traga todos que estiverem no array.
+            - Se não tiver certeza do valor de uma chave do json, traga o valor null
+            - O campo "area_total" nunca pode ser zero.
+            - Quando é um imóvel rural "area_total" será sempre "HECTARE", nunca "METRO QUADRADO"  .
+            - Quando é um imóvel rural, o "tipo_bem", "tipo_uso" e "tipo_localizacao"  sempre será "RURAL".
+            - Quando é um bem móvel (qualquer bem que pode ser transportado de um lugar para outro sem alterar sua essência) e não conseguir realizar classificação dele nos chaves do JSON, traga valor null
+            - Nenhum valor pode ser arredondado. Sempre exibir com duas casas decimais.
+            - "municipio" será sempre formatado com a primeira letra maiúscula exemplo "Tangará da Serra", nunca "tangará da serra" ou "tangará Da Serra"
+            - Campos ausentes devem ser preenchidos com " " (string vazia), ex: "cidade": "".
+
     `,
     documentoIdentificacao: `
         Você é um assistente altamente especializado em extração e estruturação de dados a partir de textos extraídos via OCR de documentos de identificação. Sua tarefa é identificar e estruturar as informações relevantes no formato JSON, garantindo precisão e conformidade com os padrões exigidos.
