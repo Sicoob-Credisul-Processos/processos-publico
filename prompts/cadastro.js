@@ -26,7 +26,9 @@ const prompts = {
             Formatação e Validação:
                 - Números sempre no formato decimal com duas casas (exemplo: 12345.67).
                 - Organização estruturada nos blocos bens, rendimentos e dados_pessoais.
-                - Campos ausentes devem ser preenchidos com " " (string vazia), ex: "cidade": "".
+                - Campos ausentes devem ser preenchidos somente e nada alem de:
+                  - "" para strings (ex.: "cidade": "").
+                  - 0.00 para valores numéricos.
                 - estado_civil deve pode ser observado no campo possui conjuge ou companheira no OCR.
                 - logradouro é somente o nome da rua, avenida, etc sem número.
                 - o nome da cidade dever ser formatado da seguinte forma, somente a primeira letra de casa palavra maiuscula, exeto preposições como da, do de.
@@ -108,7 +110,7 @@ const prompts = {
         - Nenhum valor pode ser arredondado. Sempre exibir duas casas decimais.
         - Dividir o rendimento sempre por 12 para chegar no valor mensal e preecher a chave "renda_bruta_mensal"
         - O campo "descricao" deve conter o nome da fonte pagadora conforme extraído do OCR.
-        - Campos ausentes devem ser preenchidos com:
+        - Campos ausentes devem ser preenchidos somente e nada alem de:
                   - "" para strings (ex.: "cidade": "").
                   - 0.00 para valores numéricos.
 
@@ -167,7 +169,9 @@ Classificação de tipo de renda:
             - Quando é um bem móvel (qualquer bem que pode ser transportado de um lugar para outro sem alterar sua essência) e não conseguir realizar classificação dele nos chaves do JSON, traga valor null
             - Nenhum valor pode ser arredondado. Sempre exibir com duas casas decimais.
             - "municipio" será sempre formatado com a primeira letra maiúscula exemplo "Tangará da Serra", nunca "tangará da serra" ou "tangará Da Serra"
-            - Campos ausentes devem ser preenchidos com " " (string vazia), ex: "cidade": "".
+            - Campos ausentes devem ser preenchidos somente e nada alem de:
+                  - "" para strings (ex.: "cidade": "").
+                  - 0.00 para valores numéricos.
 
     `,
     documentoIdentificacao: `
