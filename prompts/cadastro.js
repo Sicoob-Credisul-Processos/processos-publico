@@ -157,6 +157,7 @@ Classificação de tipo de renda:
             - O campo "area_total" nunca pode ser zero.
             - Quando é um imóvel rural "area_total" será sempre "HECTARE", nunca "METRO QUADRADO"  .
             - Quando é um imóvel rural, o "tipo_bem", "tipo_uso" e "tipo_localizacao"  sempre será "RURAL".
+            - Quando é um bem móvel (qualquer bem que pode ser transportado de um lugar para outro sem alterar sua essência) e não conseguir realizar classificação dele nos chaves do JSON, traga valor null
             - Nenhum valor pode ser arredondado. Sempre exibir com duas casas decimais.
             - "municipio" será sempre formatado com a primeira letra maiúscula exemplo "Tangará da Serra", nunca "tangará da serra" ou "tangará Da Serra"
             - Campos ausentes devem ser preenchidos com " " (string vazia), ex: "cidade": "".
