@@ -87,44 +87,64 @@ const prompts = {
 
             Certifique-se de seguir todas essas regras com precisão.
     `,
-    irpfRendimentos: `
-    Objetivo: Retorne um JSON estruturado com todos os rendimentos citados no OCR.
-    
-    Dicas:
-    - Cada rendimento, é estruturado conforme a interface Renda
-    - Existirão vários rendimentos, logo o retorno será sempre um array de objetos, mesmo que não encontre nenhuma renda.
-    - OCR é um objeto com um array de várias posições, cada posição é uma linha do documento extraído.
-    - Os rendimentos estão listados na tabela que contém uma coluna chamada  "NOME DA FONTE PAGADORA", essa coluna pode aparecer em várias posições      
+    irpfRendimentos: `Objetivo: Extraia todos os rendimentos do OCR e retorne um JSON estruturado como array de objetos, seguindo o modelo da interface Renda.
 
+Interface Renda:
+{
+  tipo_renda: "APOSENTADORIA" | "SALÁRIO" | "PRO-LABORE" | "OUTROS" | "APLICAÇÕES FINANCEIRAS",
+  renda_bruta_mensal: number,
+  descricao: string,
+  renda_fixa_variavel: "Renda variável" | "Renda fixa"
+}
 
-    interface Renda {
-    tipo_renda: "APOSENTADORIA" | "SALÁRIO" | "PRO-LABORE" | "OUTROS" | "APLICAÇÕES FINANCEIRAS";
-    renda_bruta_mensal: number;
-    descricao: string;
-    renda_fixa_variavel: "Renda variável" | "Renda fixa";
-    }
-    Obs. Não traga nenhum texto ou caracter além do objeto JSON.
-    Regras de extração:
-        - Apenas rendimentos do CPF titular devem ser considerados.
-        - Instituições financeiras (ex.: Sicoob, Bradesco, Itaú, Sicredi, Caixa, BB, PREV, COOP) devem ser ignoradas, exceto se contiverem 13º salário ou se o rendimento é uma aplicação financeira (LCA, LCI,CRA, CRI e caderneta de poupança).
-        - Se o rendimento for proveniente de um CNPJ da FRGS ou INSS, a chave "tipo_renda" deverá ser "APOSENTADORIA".
-        - Nenhum valor pode ser arredondado. Sempre exibir duas casas decimais.
-        - Dividir o rendimento sempre por 12 para chegar no valor mensal e preecher a chave "renda_bruta_mensal"
-        - O campo "descricao" deve conter o nome da fonte pagadora conforme extraído do OCR.
-        - Nunca deve ser retornado null
-        - Campos ausentes devem ser preenchidos somente e nada alem de:
-                  - "" para strings (ex.: "cidade": "").
-                  - 0.00 para valores numéricos.
+Instruções:
+- O OCR é um objeto contendo um array de linhas do documento extraído.
+- Sempre retorne um array (mesmo que vazio).
+- Não inclua nenhum texto fora do JSON.
 
-Classificação de tipo de renda:
-- Se a renda for de um dos tipos abaixo, deve ser classificada como "Renda fixa":
-  - SALÁRIO
-  - PRO-LABORE
-  - APOSENTADORIA
-  - BOLSAS DO GOVERNO
-  - PENSÃO ALIMENTÍCIA
-  - BUREAU EXTERNO
-- Caso contrário, será classificada como "Renda variável".
+Identificação de rendimentos:
+1. Sessão: "RENDIMENTOS TRIBUTÁVEIS DE PESSOA JURÍDICA RECEBIDOS ACUMULADAMENTE PELO TITULAR"
+   - Considere apenas rendimentos do CPF titular.
+   - Ignore instituições financeiras (Sicoob, Bradesco, Itaú, Sicredi, Caixa, BB, PREV, COOP), exceto se contiverem 13º salário ou aplicações financeiras (LCA, LCI, CRA, CRI, poupança).
+   - Se o CNPJ for da FRGS ou INSS, classifique como "APOSENTADORIA".
+
+2. Sessão: "RENDIMENTOS TRIBUTÁVEIS RECEBIDOS DE PESSOA FÍSICA E DO EXTERIOR PELO TITULAR"
+   - Busque rendimentos totais de aluguéis, trabalho não assalariado, outros e exterior.
+   - Utilize o valor total (somatório dos meses) para calcular o rendimento mensal.
+
+3. Sessão: "RENDIMENTOS ISENTOS E NÃO TRIBUTÁVEIS"
+   - Considere aplicações financeiras (LCA, LCI, CRA, CRI, poupança).
+Inclua também os seguintes rendimentos (com seus respectivos códigos e descrições resumidas):
+01. Bolsas de estudo e pesquisa (exceto médico-residente e Pronatec), sem contraprestação de serviços.
+02. Bolsas para médico-residente e servidores do Pronatec.
+05. Ganho de capital até R$ 20 mil em ações no mercado de balcão e até R$ 35 mil nos demais casos.
+06. Ganho de capital na venda do único imóvel até R$ 440 mil sem outra venda em 5 anos.
+07. Venda de imóvel residencial com reinvestimento em outro imóvel residencial no Brasil em até 180 dias.
+08. Ganho de capital na venda de moeda estrangeira em espécie até US$ 5 mil no ano.
+09. Lucros e dividendos recebidos.
+10. Parcela isenta de aposentadoria, reserva, reforma e pensão de quem tem 65 anos ou mais.
+11. Aposentadoria ou reforma por moléstia grave ou acidente em serviço.
+12. Rendimentos de poupança, LCA, LCI, CRA e CRI.
+13. Rendimento de sócio de MEI ou empresa do Simples Nacional (exceto pró-labore, aluguéis e serviços).
+18. Bonificação em ações ou incorporação de reservas ao capital.
+20. Ganhos líquidos na venda de ações em bolsa até R$ 20 mil por mês.
+21. Ganhos líquidos na venda de ouro ativo financeiro até R$ 20 mil por mês.
+23. Rendimento bruto até 90% do transporte de carga com máquinas, tratores e similares.
+24. Rendimento bruto até 40% do transporte de passageiros.
+99. Outros rendimentos isentos não especificados acima.
+
+Regras de extração:
+- Nenhum valor pode ser arredondado. Exibir sempre com duas casas decimais.
+- Divida o valor total anual por 12 para preencher "renda_bruta_mensal".
+- "descricao" deve conter o nome da fonte pagadora conforme o OCR.
+- Nunca retorne null.
+- Campos ausentes devem ser preenchidos com:
+    - "" (string)
+    - 0.00 (número)
+
+Classificação "renda_fixa_variavel":
+- Considere como "Renda fixa": SALÁRIO, PRO-LABORE, APOSENTADORIA, BOLSAS DO GOVERNO, PENSÃO ALIMENTÍCIA, BUREAU EXTERNO.
+- Caso contrário, classifique como "Renda variável".
  `,
     irpfBens: `
  Objetivo: Extrair informações de bens do OCR do IRPF e retorno um JSON (array de objetos do tipo Bem[]).
