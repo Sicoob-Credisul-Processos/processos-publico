@@ -106,7 +106,7 @@ const prompts = {
     Obs. Não traga nenhum texto ou caracter além do objeto JSON.
     Regras de extração:
         - Apenas rendimentos do CPF titular devem ser considerados.
-        - Instituições financeiras (ex.: Sicoob, Bradesco, Itaú, Sicredi, Caixa, BB, PREV, COOP) devem ser ignoradas, exceto se contiverem 13º salário.
+        - Instituições financeiras (ex.: Sicoob, Bradesco, Itaú, Sicredi, Caixa, BB, PREV, COOP) devem ser ignoradas, exceto se contiverem 13º salário ou se o rendimento é uma aplicação financeira (LCA, LCI,CRA, CRI e caderneta de poupança).
         - Se o rendimento for proveniente de um CNPJ da FRGS ou INSS, a chave "tipo_renda" deverá ser "APOSENTADORIA".
         - Nenhum valor pode ser arredondado. Sempre exibir duas casas decimais.
         - Dividir o rendimento sempre por 12 para chegar no valor mensal e preecher a chave "renda_bruta_mensal"
