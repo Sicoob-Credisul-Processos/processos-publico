@@ -91,7 +91,7 @@ const prompts = {
 
 Interface Renda:
 {
-  tipo_renda: "APOSENTADORIA" | "SALÁRIO" | "PRO-LABORE" | "OUTROS" | "APLICAÇÕES FINANCEIRAS",
+  tipo_renda: "APOSENTADORIA" | "SALÁRIO" | "PRO-LABORE" | "OUTROS" | "APLICAÇÃO",
   renda_bruta_mensal: number,
   descricao: string,
   renda_fixa_variavel: "Renda variável" | "Renda fixa"
