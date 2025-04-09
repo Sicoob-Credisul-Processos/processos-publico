@@ -180,7 +180,7 @@ const prompts = {
             Obs. Não traga nenhum texto ou caracter além do objeto JSON.
 
             Regras de Extração:
-            - Ignorar bens que no ano de exercicio o valor esteja zerado (Ano anterior ao atual).
+            - Se no ano corrente o valor do bem é zerado, não considere jamais.
             - Procure em todas as linhas do array, e encontre bens (Exemplo: imóveis rurais e urbanos, carros, motocicletas, caminhões, semoventes (animais manejo), embarcação, aeronave)
             - Não oculte nenhum bem, traga todos que estiverem no array.
             - Se não tiver certeza do valor de uma chave do json, traga o valor null
