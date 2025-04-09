@@ -50,16 +50,12 @@ const prompts = {
                     cpf_conjuge: string;
                     profissao: string;
                     tipo_endereco: 
-                        | "COMERCIAL" 
                         | "RESIDENCIAL" 
-                        | "RURAL";
                     cep: string;
                     logradouro: string;
                     tipo_logradouro:
                         | "RUA"
-                        | "AEROPORTO"
                         | "AVENIDA"
-                        | "CAMPO"
                         | "CHÁCARA"
                         | "COLÔNIA"
                         | "CONDOMÍNIO"
@@ -87,68 +83,70 @@ const prompts = {
 
             Certifique-se de seguir todas essas regras com precisão.
     `,
-    irpfRendimentos: `Objetivo: Extraia todos os rendimentos do OCR e retorne um JSON estruturado como array de objetos, seguindo o modelo da interface Renda.
+    irpfRendimentos: `
+    Objetivo: Extraia todos os rendimentos do OCR e retorne um JSON estruturado como array de objetos, seguindo o modelo da interface Renda.
 
-Interface Renda:
-{
-  tipo_renda: "APOSENTADORIA" | "SALÁRIO" | "PRO-LABORE" | "OUTROS" | "APLICAÇÃO",
-  renda_bruta_mensal: number,
-  descricao: string,
-  renda_fixa_variavel: "Renda variável" | "Renda fixa"
-}
+    Interface Renda:
+    {
+        tipo_renda: "APOSENTADORIA" | "SALÁRIO" | "PRO-LABORE" | "OUTROS" | "APLICAÇÃO",
+        renda_bruta_mensal: number,
+        descricao: string,
+        renda_fixa_variavel: "Renda variável" | "Renda fixa"
+    }
 
-Instruções:
-- O OCR é um objeto contendo um array de linhas do documento extraído.
-- Sempre retorne um array (mesmo que vazio).
-- Não inclua nenhum texto fora do JSON.
+    Instruções:
+    - O OCR é um objeto contendo um array de linhas do documento extraído.
+    - Sempre retorne um array (mesmo que vazio).
+    - Não inclua nenhum texto fora do JSON.
 
-Identificação de rendimentos:
-1. Sessão: "RENDIMENTOS TRIBUTÁVEIS DE PESSOA JURÍDICA RECEBIDOS ACUMULADAMENTE PELO TITULAR"
-   - Considere apenas rendimentos do CPF titular.
-   - Ignore instituições financeiras (Sicoob, Bradesco, Itaú, Sicredi, Caixa, BB, PREV, COOP), exceto se contiverem 13º salário ou aplicações financeiras (LCA, LCI, CRA, CRI, poupança).
-   - Se o CNPJ for da FRGS ou INSS, classifique como "APOSENTADORIA".
+    Identificação de rendimentos:
+    1. Sessão: "RENDIMENTOS TRIBUTÁVEIS RECEBIDOS DE PESSOA JURÍDICA PELO TITULAR"
+        - Considere apenas rendimentos do CPF titular.
+        - Ignore instituições financeiras (Sicoob, Bradesco, Itaú, Sicredi, Caixa, BB, PREV, COOP), exceto se contiverem 13º salário ou aplicações financeiras (LCA, LCI, CRA, CRI, poupança).
+        - Se o CNPJ for da FRGS ou INSS, classifique como "APOSENTADORIA".
+        - Se o CNPJ não for de institução financeira e não tiver 13° salário classifique como PRO-LABORE.
 
-2. Sessão: "RENDIMENTOS TRIBUTÁVEIS RECEBIDOS DE PESSOA FÍSICA E DO EXTERIOR PELO TITULAR"
-   - Busque rendimentos totais de aluguéis, trabalho não assalariado, outros e exterior.
-   - Utilize o valor total (somatório dos meses) para calcular o rendimento mensal.
+    2. Sessão: "RENDIMENTOS TRIBUTÁVEIS RECEBIDOS DE PESSOA FÍSICA E DO EXTERIOR PELO TITULAR"
+        - Busque rendimentos totais de aluguéis, trabalho não assalariado, outros e exterior.
+        - Utilize o valor total (somatório dos meses) para calcular o rendimento mensal.
 
-3. Sessão: "RENDIMENTOS ISENTOS E NÃO TRIBUTÁVEIS"
-   - Considere aplicações financeiras (LCA, LCI, CRA, CRI, poupança).
-Inclua também os seguintes rendimentos (com seus respectivos códigos e descrições resumidas):
-01. Bolsas de estudo e pesquisa (exceto médico-residente e Pronatec), sem contraprestação de serviços.
-02. Bolsas para médico-residente e servidores do Pronatec.
-05. Ganho de capital até R$ 20 mil em ações no mercado de balcão e até R$ 35 mil nos demais casos.
-06. Ganho de capital na venda do único imóvel até R$ 440 mil sem outra venda em 5 anos.
-07. Venda de imóvel residencial com reinvestimento em outro imóvel residencial no Brasil em até 180 dias.
-08. Ganho de capital na venda de moeda estrangeira em espécie até US$ 5 mil no ano.
-09. Lucros e dividendos recebidos.
-10. Parcela isenta de aposentadoria, reserva, reforma e pensão de quem tem 65 anos ou mais.
-11. Aposentadoria ou reforma por moléstia grave ou acidente em serviço.
-12. Rendimentos de poupança, LCA, LCI, CRA e CRI.
-13. Rendimento de sócio de MEI ou empresa do Simples Nacional (exceto pró-labore, aluguéis e serviços).
-18. Bonificação em ações ou incorporação de reservas ao capital.
-20. Ganhos líquidos na venda de ações em bolsa até R$ 20 mil por mês.
-21. Ganhos líquidos na venda de ouro ativo financeiro até R$ 20 mil por mês.
-23. Rendimento bruto até 90% do transporte de carga com máquinas, tratores e similares.
-24. Rendimento bruto até 40% do transporte de passageiros.
-99. Outros rendimentos isentos não especificados acima.
+    3. Sessão: "RENDIMENTOS ISENTOS E NÃO TRIBUTÁVEIS"
+    - Considere aplicações financeiras (LCA, LCI, CRA, CRI, poupança).
+    Inclua também os seguintes rendimentos (com seus respectivos códigos e descrições resumidas):
+    01. Bolsas de estudo e pesquisa (exceto médico-residente e Pronatec), sem contraprestação de serviços.
+    02. Bolsas para médico-residente e servidores do Pronatec.
+    05. Ganho de capital até R$ 20 mil em ações no mercado de balcão e até R$ 35 mil nos demais casos.
+    06. Ganho de capital na venda do único imóvel até R$ 440 mil sem outra venda em 5 anos.
+    07. Venda de imóvel residencial com reinvestimento em outro imóvel residencial no Brasil em até 180 dias.
+    08. Ganho de capital na venda de moeda estrangeira em espécie até US$ 5 mil no ano.
+    09. Lucros e dividendos recebidos.
+    10. Parcela isenta de aposentadoria, reserva, reforma e pensão de quem tem 65 anos ou mais.
+    11. Aposentadoria ou reforma por moléstia grave ou acidente em serviço.
+    12. Rendimentos de poupança, LCA, LCI, CRA e CRI.
+    13. Rendimento de sócio de MEI ou empresa do Simples Nacional (exceto pró-labore, aluguéis e serviços).
+    18. Bonificação em ações ou incorporação de reservas ao capital.
+    20. Ganhos líquidos na venda de ações em bolsa até R$ 20 mil por mês.
+    21. Ganhos líquidos na venda de ouro ativo financeiro até R$ 20 mil por mês.
+    23. Rendimento bruto até 90% do transporte de carga com máquinas, tratores e similares.
+    24. Rendimento bruto até 40% do transporte de passageiros.
+    99. Outros rendimentos isentos não especificados acima.
 
-Regras de extração:
-- Nenhum valor pode ser arredondado. Exibir sempre com duas casas decimais.
-- Divida o valor total anual por 12 para preencher "renda_bruta_mensal".
-- "descricao" deve conter o nome da fonte pagadora conforme o OCR.
-- Nunca retorne null.
-- Campos ausentes devem ser preenchidos com:
-    - "" (string)
-    - 0.00 (número)
+    Regras de extração:
+    - Nenhum valor pode ser arredondado. Exibir sempre com duas casas decimais.
+    - Divida o valor total anual por 12 para preencher "renda_bruta_mensal".
+    - "descricao" deve conter o nome da fonte pagadora conforme o OCR.
+    - Nunca retorne null.
+    - Campos ausentes devem ser preenchidos com:
+        - "" (string)
+        - 0.00 (número)
 
-Classificação "renda_fixa_variavel":
-- Considere como "Renda fixa": SALÁRIO, PRO-LABORE, APOSENTADORIA, BOLSAS DO GOVERNO, PENSÃO ALIMENTÍCIA, BUREAU EXTERNO.
-- Caso contrário, classifique como "Renda variável".
- `,
+    Classificação "renda_fixa_variavel":
+    - Considere como "Renda fixa": SALÁRIO, PRO-LABORE, APOSENTADORIA, BOLSAS DO GOVERNO, PENSÃO ALIMENTÍCIA, BUREAU EXTERNO.
+    - Caso contrário, classifique como "Renda variável".
+    `,
     irpfBens: `
- Objetivo: Extrair informações de bens do OCR do IRPF e retorno um JSON (array de objetos do tipo Bem[]).
-     interface Bem {
+    Objetivo: Extrair informações de bens do OCR do IRPF e retorno um JSON (array de objetos do tipo Bem[]).
+    interface Bem {
                     tipo:  
                         | "IMÓVEL" 
                         | "MÓVEL";
@@ -181,7 +179,8 @@ Classificação "renda_fixa_variavel":
 
             Obs. Não traga nenhum texto ou caracter além do objeto JSON.
 
-             Regras de Extração:
+            Regras de Extração:
+            - Ignorar bens que no ano de exercicio o valor esteja zerado (Ano anterior ao atual).
             - Procure em todas as linhas do array, e encontre bens (Exemplo: imóveis rurais e urbanos, carros, motocicletas, caminhões, semoventes (animais manejo), embarcação, aeronave)
             - Não oculte nenhum bem, traga todos que estiverem no array.
             - Se não tiver certeza do valor de uma chave do json, traga o valor null
