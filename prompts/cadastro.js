@@ -192,52 +192,20 @@ const prompts = {
             Estrutura esperada para cada objeto:
 
             {
-                "grupo": string,                        // Ex: "01 - Bens Imóveis"
-                "codigo": string,                       // Ex: "11 - Apartamento"
-                "discriminacao": string,               // Texto completo da descrição do bem
-                "situacao_ano_anterior": number,       // Valor no ano anterior
-                "situacao_ano_atual": number,          // Valor no ano atual
-                "titularidade": string,                // "Titular" ou "Dependente"
-                
-                // Informações adicionais para imóveis (caso identificadas na descrição)
+                "grupo": string,                        
+                "codigo": string,                       
+                "discriminacao": string,               
+                "situacao_ano_anterior": number,       
+                "situacao_ano_atual": number,          
+                "titularidade": string,
                 "logradouro": string,
                 "numero": string,
                 "bairro": string,
                 "municipio": string,
                 "uf": string,
-                "data_aquisicao": string,              // Formato: "dd/mm/aaaa"
-                "area_total": string                   // Ex: "72,5 m²" (como extraído)
+                "data_aquisicao": string,              
+                "area_total": string
             }
-
-            Instruções:
-            - Sempre retorne um array, mesmo que vazio.
-            - Normalize os valores numéricos com ponto como separador decimal (ex: 123456.78).
-            - Remova "R$" e outros símbolos monetários.
-            - Se algum dado não estiver disponível, preencha com:
-                - "" para strings
-                - 0.00 para números
-            - Para imóveis, tente extrair da discriminação dados como logradouro, número, bairro, município, UF, data de aquisição e área total.
-            - "titularidade" deve ser identificado com base na expressão: "Bem pertencente ao titular" ou "ao dependente".
-
-            Exemplo de saída:
-
-            [
-                {
-                    "grupo": "01 - Bens Imóveis",
-                    "codigo": "11 - Apartamento",
-                    "discriminacao": "Apartamento situado na Rua Exemplo, nº 123, Bairro Centro, Município de Porto Alegre/RS, adquirido em 15/03/2020, com área total de 72,5 m².",
-                    "situacao_ano_anterior": 250000.00,
-                    "situacao_ano_atual": 260000.00,
-                    "titularidade": "Titular",
-                    "logradouro": "Rua Exemplo",
-                    "numero": "123",
-                    "bairro": "Centro",
-                    "municipio": "Porto Alegre",
-                    "uf": "RS",
-                    "data_aquisicao": "15/03/2020",
-                    "area_total": "72,5 m²"
-                }
-            ]
         `,
         promptEstruturacao:`
             Objetivo: analise informaçoes recebidas em um array de objetos e retorne um JSON (array de objetos do tipo Bem[]).
