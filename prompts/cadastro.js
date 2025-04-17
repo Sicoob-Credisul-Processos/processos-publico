@@ -210,6 +210,7 @@ const prompts = {
             }
 
             Instruções:
+            
             - Sempre retorne um array, mesmo que vazio.
             - Normalize os valores numéricos com ponto como separador decimal (ex: 123456.78).
             - Remova "R$" e outros símbolos monetários.
@@ -275,6 +276,7 @@ const prompts = {
             Obs. Não traga nenhum texto ou caracter além do objeto JSON.
 
             Regras de Extração:
+            - "descricao" deve ser resumido em no máximo 10 palavras
             - Se no ano corrente o valor do bem é zerado, não considere jamais.
             - Procure em todas as linhas do array, e encontre bens (Exemplo: imóveis rurais e urbanos, carros, motocicletas, caminhões, semoventes (animais manejo), embarcação, aeronave)
             - Não oculte nenhum bem, traga todos que estiverem no array.
