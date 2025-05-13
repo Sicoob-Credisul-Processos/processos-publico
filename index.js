@@ -572,10 +572,12 @@ const SicoobZeev = {
                             const valoresFaltando = valoresAceitos.filter(valor => !valoresEncontrados.has(valor));
 
                             if (valoresFaltando.length > 0) {
-                                mensagensErro.push(
-                                    `É necessário que na tabela contenha no campo ${formatarNomeCampo(campo)} os seguintes valores:\n` +
-                                    valoresFaltando.map(valor => `    • ${valor}`).join('\n')
-                                );
+                                mensagensErro.push(`
+                                    É necessário que na tabela contenha no campo <strong>${formatarNomeCampo(campo)}</strong> os seguintes valores:
+                                    <ul style="margin: 5px 0 5px 20px; padding-left: 30px;">
+                                        ${valoresFaltando.map(valor => `<li>${valor}</li>`).join('')}
+                                    </ul>
+                                `);
                             }
                         }
                     });
