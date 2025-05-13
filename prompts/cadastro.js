@@ -84,7 +84,7 @@ const prompts = {
             Certifique-se de seguir todas essas regras com precisão.
     `,
     irpfRendimentos: {
-        promptExtracao:`
+        promptExtracao: `
             Você receberá um conteúdo bruto extraído por OCR de um informe de rendimentos.
             Sua tarefa é extrair e estruturar as informações no formato JSON, de forma limpa, objetiva e sem redundâncias.
 
@@ -186,8 +186,8 @@ const prompts = {
             - Todos os demais tipos → "Renda variável".
         `
     },
-    irpfBens:{
-        promptExtracao:`
+    irpfBens: {
+        promptExtracao: `
             Objetivo: A partir do conteúdo extraído por OCR da seção de Bens e Direitos de uma declaração do IRPF, retorne um JSON estruturado com as informações de cada bem identificado.
             Estrutura esperada para cada objeto:
 
@@ -238,7 +238,7 @@ const prompts = {
                 }
             ]
         `,
-        promptEstruturacao:`
+        promptEstruturacao: `
             Objetivo: analise informaçoes recebidas em um array de objetos e retorne um JSON (array de objetos do tipo Bem[]).
             interface Bem 
                 tipo:  
@@ -290,8 +290,7 @@ const prompts = {
                 - "" para strings (ex.: "cidade": "").
                 - 0.00 para valores numéricos.
         `
-    }
-    ,
+    },
     documentoIdentificacao: `
         Você é um assistente altamente especializado em extração e estruturação de dados a partir de textos extraídos via OCR de documentos de identificação. Sua tarefa é identificar e estruturar as informações relevantes no formato JSON, garantindo precisão e conformidade com os padrões exigidos.
 
@@ -365,5 +364,49 @@ const prompts = {
             }
 
         Certifique-se de seguir todas essas regras e garantir que os dados extraídos estejam corretos, consistentes e bem formatados.
-    `
+    `,
+    declaracaoRenda: {
+        promptExtracao: `
+            Você receberá um conteúdo bruto extraído por OCR de uma declaração de renda.
+            Sua tarefa é extrair e estruturar as informações no formato JSON, de forma limpa, objetiva e sem redundâncias.
+
+            Estrutura esperada:
+            {
+                "esta_enderecado_a_cooperativa": true,
+                "renda_bruta_mensal": 2500.00,
+                "descricao": "Declaração de renda do João da Silva",
+                "assinado": true
+            }
+
+            Regras de extração:
+            - O campo "esta_enderecado_a_cooperativa" deve ser true se houver qualquer menção à Cooperativa de Crédito e Investimento do Sudoeste da Amazonia Ltda - Sicoob Credisul.
+            - O campo "renda_bruta_mensal" deve ser um número no formato 1234.56. Normalize o valor (remova "R$", espaços, vírgulas como separador decimal, etc).
+            - O campo "descricao" deve conter: Declaração de renda do {{nome do cooperado}}. Use o nome que estiver presente no texto.
+            - Se a renda bruta mensal for maior que 2300, valide se a declaração está assinada (procure por termos como "assinatura", "assinado", ou marca de assinatura). Caso esteja, adicione o campo "assinado": true. Se não estiver assinada, omita o campo.
+            - Não inclua campos vazios.
+            - Não inclua chaves irrelevantes.
+            - Ignore datas, locais ou outros elementos não pedidos no JSON.
+        `,
+        promptEstruturacao: `
+            Você receberá um conteúdo bruto extraído por OCR de uma declaração de renda.
+            Sua tarefa é estruturar as informações no formato JSON, respeitando os campos definidos no objeto RendimentoDto.
+
+            Estrutura esperada:
+            {
+                "renda_bruta_mensal": 2800.00,
+                "descricao": "Declaração de renda do João da Silva",
+            }
+
+            Regras de extração e estruturação:
+            - "renda_bruta_mensal": deve ser um número. Normalize o valor (remova símbolos como R$, espaços, vírgulas etc). Exemplo: R$ 2.500,00 → 2500.00.
+            - "descricao": deve sempre seguir o padrão: Declaração de renda do {{nome do cooperado}}. Extraia o nome da pessoa que declara a renda.
+            - "fixa_variavel": determine se a renda é FIXA ou VARIAVEL com base no contexto. Se o texto indicar rendimentos mensais constantes (ex: salário, benefício), use FIXA. Se forem irregulares (ex: comissões, vendas, aluguéis variáveis), use VARIAVEL.
+
+            Considerações:
+            - Não inclua campos que não estão no DTO.
+            - Não use chaves vazias.
+            - Ignore informações como assinatura, local ou data – elas não fazem parte do DTO.
+            - Formate o JSON com ponto como separador decimal.
+        `
+    }
 }
