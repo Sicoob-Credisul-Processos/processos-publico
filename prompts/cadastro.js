@@ -206,6 +206,37 @@ const prompts = {
                 "data_aquisicao": string,              
                 "area_total": string
             }
+
+            Instruções:
+            
+            - Sempre retorne um array, mesmo que vazio.
+            - Normalize os valores numéricos com ponto como separador decimal (ex: 123456.78).
+            - Remova "R$" e outros símbolos monetários.
+            - Se algum dado não estiver disponível, preencha com:
+                - "" para strings
+                - 0.00 para números
+            - Para imóveis, tente extrair da discriminação dados como logradouro, número, bairro, município, UF, data de aquisição e área total.
+            - "titularidade" deve ser identificado com base na expressão: "Bem pertencente ao titular" ou "ao dependente".
+
+            Exemplo de saída:
+
+            [
+                {
+                    "grupo": "01 - Bens Imóveis",
+                    "codigo": "11 - Apartamento",
+                    "discriminacao": "Apartamento situado na Rua Exemplo, nº 123, Bairro Centro, Município de Porto Alegre/RS, adquirido em 15/03/2020, com área total de 72,5 m².",
+                    "situacao_ano_anterior": 250000.00,
+                    "situacao_ano_atual": 260000.00,
+                    "titularidade": "Titular",
+                    "logradouro": "Rua Exemplo",
+                    "numero": "123",
+                    "bairro": "Centro",
+                    "municipio": "Porto Alegre",
+                    "uf": "RS",
+                    "data_aquisicao": "15/03/2020",
+                    "area_total": "72,5 m²"
+                }
+            ]
         `,
         promptEstruturacao:`
             Objetivo: analise informaçoes recebidas em um array de objetos e retorne um JSON (array de objetos do tipo Bem[]).
@@ -243,6 +274,7 @@ const prompts = {
             Obs. Não traga nenhum texto ou caracter além do objeto JSON.
 
             Regras de Extração:
+            - "descricao" deve ser resumido em no máximo 10 palavras
             - Se no ano corrente o valor do bem é zerado, não considere jamais.
             - Procure em todas as linhas do array, e encontre bens (Exemplo: imóveis rurais e urbanos, carros, motocicletas, caminhões, semoventes (animais manejo), embarcação, aeronave)
             - Não oculte nenhum bem, traga todos que estiverem no array.
