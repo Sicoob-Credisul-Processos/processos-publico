@@ -556,9 +556,12 @@ const SicoobZeev = {
 
                         // Verifica se o valor do campo está na lista de valores aceitos
                         if (Array.isArray(valoresAceitos) && valorCampo && !valoresAceitos.includes(valorCampo)) {
-                            mensagensErro.push(
-                                `Linha ${index + 1}: O campo "${nomeCampo}" deve ser um dos valores: "${valoresAceitos.join('", "')}".`
-                            );
+                            mensagensErro.push(`
+                                Linha ${index + 1}: O campo <strong>"${nomeCampo}"</strong> deve ser um dos valores: 
+                                <ul style="margin: 5px 0 5px 20px; padding-left: 30px;">
+                                    ${valoresAceitos.map(valor => `<li>${valor}</li>`).join('')}
+                                </ul>
+                            `);
                         }
 
                         // Valida dependências se o campo tiver um valor
