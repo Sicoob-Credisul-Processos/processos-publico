@@ -573,7 +573,8 @@ const SicoobZeev = {
 
                             if (valoresFaltando.length > 0) {
                                 mensagensErro.push(
-                                    `É necessário que na tabela contenha no campo ${formatarNomeCampo(campo)} os seguintes valores: "${valoresFaltando.join('", "')}".`
+                                    `É necessário que na tabela contenha no campo ${formatarNomeCampo(campo)} os seguintes valores:\n` +
+                                    valoresFaltando.map(valor => `    • ${valor}`).join('\n')
                                 );
                             }
                         }
