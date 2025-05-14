@@ -88,6 +88,7 @@ const prompts = {
             Você receberá um conteúdo bruto extraído por OCR de um informe de rendimentos.
             Sua tarefa é extrair e estruturar as informações no formato JSON, de forma limpa, objetiva e sem redundâncias.
 
+            Se atente para não misturar a descrição de uma renda com a outra.
             Para cada rendimento encontrado, crie um único objeto dentro do array "rendimentos".
             Use apenas os campos que estiverem presentes no texto. Se um campo não for encontrado, ele **não deve aparecer** no JSON.
             Não inclua chaves vazias. Não repita a estrutura completa se só houver, por exemplo, um valor total anual.
