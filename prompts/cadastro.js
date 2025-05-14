@@ -93,6 +93,7 @@ const prompts = {
             Use apenas os campos que estiverem presentes no texto. Se um campo não for encontrado, ele **não deve aparecer** no JSON.
             Não inclua chaves vazias. Não repita a estrutura completa se só houver, por exemplo, um valor total anual.
             Código do rendimento (por exemplo: '06. Rendimentos de aplicações financeiras') – quando houver, inclua uma chave "codigo" no JSON
+            Não esqueca de verificar se tem 13° salário.
 
             Exemplo mínimo:
             {
@@ -117,6 +118,7 @@ const prompts = {
                         "beneficiario": "João da Silva",
                         "cpf": "000.000.000-00",
                         "rendimentos_recebidos_pj": "12345.67"
+                        "valor_decimo_terceiro": "15000"
                     }
                 ]
             }
