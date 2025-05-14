@@ -178,7 +178,7 @@ const prompts = {
             Regras de extração:
             - Se renda_bruta_mensal for "0" ignorar a renda
             - Valores devem ter sempre duas casas decimais, sem arredondar.
-            - Divida o valor anual por 12 para "renda_bruta_mensal".
+            - Considerando que o irpf sempre traz o valor anual divida o valor por 12 para "renda_bruta_mensal".
             - "descricao" deve conter o nome da fonte pagadora.
             - Nunca use null.
             - Preencha campos ausentes com:
