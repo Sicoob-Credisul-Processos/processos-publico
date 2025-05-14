@@ -209,6 +209,7 @@ const prompts = {
 
             Instruções:
             
+            - Sempre considere todos os bens, sua função é apenas tebelar os dados
             - Sempre retorne um array, mesmo que vazio.
             - Normalize os valores numéricos com ponto como separador decimal (ex: 123456.78).
             - Remova "R$" e outros símbolos monetários.
