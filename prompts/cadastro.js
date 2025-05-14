@@ -275,21 +275,26 @@ const prompts = {
             Obs. Não traga nenhum texto ou caracter além do objeto JSON.
 
             Regras de Extração:
-            - "descricao" deve ser resumido em no máximo 10 palavras
-            - Se no ano corrente o valor do bem é zerado, não considere jamais.
-            - Procure em todas as linhas do array, e encontre bens (Exemplo: imóveis rurais e urbanos, carros, motocicletas, caminhões, semoventes (animais manejo), embarcação, aeronave)
-            - Não oculte nenhum bem, traga todos que estiverem no array.
-            - Se não tiver certeza do valor de uma chave do json, traga o valor null
+            - O campo "descricao" deve ser resumido em no máximo 50 palavras.
+            - Ignore bens com valor zerado no ano corrente.
+            - Procure em todas as linhas do array e extraia todos os bens encontrados. Exemplos:
+               - Imóveis (urbanos e rurais)
+               - Veículos (carros, motocicletas, caminhões)
+               - Semoventes (animais de manejo)
+               - Embarcações e aeronaves
+            - Se não tiver certeza do valor de uma chave no JSON, use:
+               - "" para campos de texto
+               - 0.00 para campos numéricos
             - O campo "area_total" nunca pode ser zero.
-            - Quando é um imóvel rural "area_total" será sempre "HECTARE", nunca "METRO QUADRADO"  .
-            - Quando é um imóvel rural, o "tipo_bem", "tipo_uso" e "tipo_localizacao"  sempre será "RURAL".
-            - Quando é um bem móvel (qualquer bem que pode ser transportado de um lugar para outro sem alterar sua essência) e não conseguir realizar classificação dele nos chaves do JSON, traga valor null
-            - Nenhum valor pode ser arredondado. Sempre exibir com duas casas decimais.
-            - "municipio" será sempre formatado com a primeira letra maiúscula exemplo "Tangará da Serra", nunca "tangará da serra" ou "tangará Da Serra"
-            - Nunca deve ser retornado null
-            - Campos ausentes devem ser preenchidos somente e nada alem de:
-                - "" para strings (ex.: "cidade": "").
-                - 0.00 para valores numéricos.
+            - Para imóveis rurais:
+               - "area_total" deve estar em HECTARE, nunca em METRO QUADRADO
+               - Os campos "tipo_bem", "tipo_uso" e "tipo_localizacao" devem conter "RURAL"
+            - Para bens móveis que não puderem ser classificados nos campos do JSON, preencha com null os campos desconhecidos.
+            - Não arredonde valores. Sempre exiba com duas casas decimais.
+            - O campo "municipio" deve ser capitalizado corretamente (ex.: "Tangará da Serra"), nunca todo em minúsculas ou com letras aleatórias em maiúsculo.
+            - Nunca retorne null. Campos ausentes devem ser preenchidos da seguinte forma:
+                - "" para strings
+                - 0.00 para valores numéricos
         `
     },
     documentoIdentificacao: `
