@@ -410,8 +410,53 @@ const prompts = {
             Regras de extração e estruturação:
             - "renda_bruta_mensal": deve ser um número. Normalize o valor (remova símbolos como R$, espaços, vírgulas etc). Exemplo: R$ 2.500,00 → 2500.00.
             - "descricao": deve sempre seguir o padrão: Declaração de renda do {{nome do cooperado}}. Extraia o nome da pessoa que declara a renda.
-            - "fixa_variavel": determine se a renda é FIXA ou VARIAVEL com base no contexto. Se o texto indicar rendimentos mensais constantes (ex: salário, benefício), use FIXA. Se forem irregulares (ex: comissões, vendas, aluguéis variáveis), use VARIAVEL.
 
+            Considerações:
+            - Não inclua campos que não estão no DTO.
+            - Não use chaves vazias.
+            - Ignore informações como assinatura, local ou data – elas não fazem parte do DTO.
+            - Formate o JSON com ponto como separador decimal.
+        `
+    },
+    holerite: {
+        promptExtracao: `
+            Você receberá um conteúdo bruto extraído por OCR de um ou mais holerites (contracheques), podendo haver documentos de uma ou mais pessoas.
+            Sua tarefa é extrair e estruturar as informações de forma limpa, objetiva e sem redundâncias, no formato JSON.
+            
+            Estrutura esperada:
+            [
+              {
+                "nome": "João da Silva",
+                "rendimentos": [2500.00, 2600.50],
+                "descricao": "Holerite de João da Silva"
+              }
+            ]
+            
+            Regras de extração:
+            - O campo "rendimentos" deve ser um array de números (float), representando os valores brutos recebidos em cada página do holerite.
+            - Normalize os valores:
+                - Remova "R$", espaços e pontos usados como separador de milhar.
+                - Substitua vírgulas por pontos (ex: R$ 2.345,67 → 2345.67).
+            - O campo "descricao" deve conter o texto: Holerite de {{nome do cooperado}}.
+            - Caso existam holerites de mais de uma pessoa, agrupe os valores por nome.
+            - Não inclua campos vazios ou com valores não extraídos corretamente.
+            - Ignore informações irrelevantes como datas, locais, códigos ou outros elementos que não forem especificados acima.
+        `,
+        promptEstruturacao: `
+            Você receberá um conteúdo bruto extraído por OCR de uma declaração de renda.  
+            Sua tarefa é estruturar as informações no formato JSON, respeitando os campos definidos no objeto.
+            
+            Estrutura esperada:
+            {
+              "renda_bruta_mensal": 2800.00,
+              "descricao": "Declaração de renda do João da Silva",
+            }
+            
+            Regras de extração e estruturação:
+            - "renda_bruta_mensal": deve ser um número. Normalize o valor (remova símbolos como R$, espaços, vírgulas etc). Exemplo: R$ 2.500,00 → 2500.00.
+            - "renda_bruta_mensal": se no array do conteúdo extraído houver mais de um valor, calcule a média; se houver apenas um, utilize-o diretamente.
+            - "descricao": deve sempre seguir o padrão: Declaração de renda do {{nome do cooperado}}. Extraia o nome da pessoa que declara a renda.
+            
             Considerações:
             - Não inclua campos que não estão no DTO.
             - Não use chaves vazias.
