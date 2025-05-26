@@ -433,7 +433,7 @@ const prompts = {
             ]
             
             Regras de extração:
-            - O campo "rendimentos" deve ser um array de números (float), representando os valores brutos recebidos em cada página do holerite.
+            - O campo "rendimentos" deve ser um array de números (float), representando os valores brutos recebidos em cada página do holerite e somente o valor bruto.
             - Normalize os valores:
                 - Remova "R$", espaços e pontos usados como separador de milhar.
                 - Substitua vírgulas por pontos (ex: R$ 2.345,67 → 2345.67).
