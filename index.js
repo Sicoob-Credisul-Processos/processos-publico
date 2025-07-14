@@ -364,6 +364,33 @@ const SicoobZeev = {
                 } else {
                     console.error(`Elemento com ID "${idDaReferencia}" não encontrado.`);
                 }
+            },
+            limitarTextArea: (maximoDeCaracteres) => {
+                const textAreas = document.querySelectorAll('textarea');
+
+                textAreas.forEach((textArea) => {
+                    const aviso = document.createElement('div');
+
+                    aviso.style.cssText = 'color:#e53935;font-size:0.85rem;margin-top:4px;display:none';
+
+                    aviso.textContent = `⚠️ Limite de ${maximoDeCaracteres} caracteres atingido!`;
+
+                    textArea.insertAdjacentElement('afterend', aviso);
+
+                    textArea.addEventListener('input', (e) => {
+                        const { value } = e.target;
+
+                        if (value.length > maximoDeCaracteres) {
+                           
+                            e.target.value = value.slice(0, maximoDeCaracteres);
+
+                            aviso.style.display = 'block';
+                            console.log(`🚨 Texto truncado em ${maximoDeCaracteres} caracteres.`);
+                        } else {
+                            aviso.style.display = 'none';
+                        }
+                    });
+                });
             }
         },
         Alertas: {
@@ -1117,5 +1144,6 @@ document.addEventListener("DOMContentLoaded", () => {
         SicoobZeev.ferramentasHTML.utils.AddlinkParaBaixarTodosOsDocumentos();
         SicoobZeev.ferramentasHTML.utils.ClicarNoBotaoPesquisarDoInputPesquisarPreencher();
         SicoobZeev.ferramentasHTML.utils.createTeamsLink();
+        SicoobZeev.ferramentasHTML.utils.limitarTextArea(3000);
     }, 200);
 });
