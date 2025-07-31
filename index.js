@@ -381,7 +381,7 @@ const SicoobZeev = {
                         const { value } = e.target;
 
                         if (value.length > maximoDeCaracteres) {
-                           
+
                             e.target.value = value.slice(0, maximoDeCaracteres);
 
                             aviso.style.display = 'block';
@@ -500,17 +500,88 @@ const SicoobZeev = {
                 };
 
                 // Função para validar dependências entre campos
+                // const validarDependencias = (linha, dependencias, index, campoPrincipal, valorPrincipal) => {
+                //     dependencias.forEach((dependencia) => {
+                //         const {
+                //             campo: campoDependente,           // Campo dependente a ser validado
+                //             obrigatorio: obrigatorioDependente, // Indica se o campo dependente é obrigatório
+                //             valoresAceitos: valoresDependencia, // Lista de valores aceitos para o campo dependente
+                //             obrigatorioTodos,                // Indica se todos os valores devem ser verificados
+                //             dependencias: subDependencias,    // Dependências adicionais para validação recursiva
+                //         } = dependencia;
+                //         const valorDependencia = linha[campoDependente]; // Valor do campo dependente
+                //         const nomeDependencia = formatarNomeCampo(campoDependente); // Nome formatado do campo dependente
+
+                //         // Chave de verificação única para rastrear valores já verificados
+                //         const chaveVerificacao = `${campoPrincipal}-${valorPrincipal}-${campoDependente}`;
+                //         if (!valoresVerificados[chaveVerificacao] && Array.isArray(valoresDependencia)) {
+                //             valoresVerificados[chaveVerificacao] = new Set(valoresDependencia);
+                //         }
+
+                //         // Verifica se o campo dependente é obrigatório e está vazio
+                //         if (obrigatorioDependente && (!valorDependencia || valorDependencia.trim() === '')) {
+                //             mensagensErro.push(`Linha ${index + 1}: O campo "${nomeDependencia}" é obrigatório.`);
+                //         }
+
+                //         // Verifica se o valor do campo dependente está na lista de valores aceitos, caso seja um objeto
+                //         if (
+                //             typeof valoresDependencia === 'object' &&
+                //             !Array.isArray(valoresDependencia) &&
+                //             valoresDependencia[valorPrincipal] &&
+                //             valorDependencia &&
+                //             !valoresDependencia[valorPrincipal].includes(valorDependencia)
+                //         ) {
+                //             mensagensErro.push(
+                //                 `Linha ${index + 1}: O campo "${nomeDependencia}" deve ser um dos valores: "${valoresDependencia[
+                //                     valorPrincipal
+                //                 ].join('", "')}" quando "${formatarNomeCampo(campoPrincipal)}" é "${valorPrincipal}".`
+                //             );
+                //         }
+
+                //         // Verifica se o valor do campo dependente está na lista de valores aceitos, caso seja um array
+                //         if (
+                //             Array.isArray(valoresDependencia) &&
+                //             valorDependencia &&
+                //             !valoresDependencia.includes(valorDependencia)
+                //         ) {
+                //             mensagensErro.push(
+                //                 `Linha ${index + 1}: O campo "${nomeDependencia}" deve ser um dos valores: "${valoresDependencia.join(
+                //                     '", "'
+                //                 )}" quando "${formatarNomeCampo(campoPrincipal)}" é "${valorPrincipal}".`
+                //             );
+                //         }
+
+                //         // Verifica se todos os valores obrigatórios foram preenchidos
+                //         if (
+                //             obrigatorioTodos &&
+                //             Array.isArray(valoresDependencia) &&
+                //             valoresVerificados[chaveVerificacao]
+                //         ) {
+                //             if (valoresVerificados[chaveVerificacao].has(valorDependencia)) {
+                //                 valoresVerificados[chaveVerificacao].delete(valorDependencia);
+                //             }
+                //         }
+
+                //         // Recursivamente validar sub-dependências
+                //         if (subDependencias && subDependencias.length > 0) {
+                //             validarDependencias(linha, subDependencias, index, campoDependente, valorDependencia);
+                //         }
+                //     });
+                // };
+
                 const validarDependencias = (linha, dependencias, index, campoPrincipal, valorPrincipal) => {
                     dependencias.forEach((dependencia) => {
                         const {
-                            campo: campoDependente,           // Campo dependente a ser validado
-                            obrigatorio: obrigatorioDependente, // Indica se o campo dependente é obrigatório
-                            valoresAceitos: valoresDependencia, // Lista de valores aceitos para o campo dependente
-                            obrigatorioTodos,                // Indica se todos os valores devem ser verificados
-                            dependencias: subDependencias,    // Dependências adicionais para validação recursiva
+                            campo: campoDependente,
+                            obrigatorio: obrigatorioDependente,
+                            valoresAceitos: valoresDependencia,
+                            obrigatorioTodos,
+                            dependencias: subDependencias,
+                            validarArquivo: validarArquivoDependente
                         } = dependencia;
-                        const valorDependencia = linha[campoDependente]; // Valor do campo dependente
-                        const nomeDependencia = formatarNomeCampo(campoDependente); // Nome formatado do campo dependente
+
+                        const valorDependencia = linha[campoDependente];
+                        const nomeDependencia = formatarNomeCampo(campoDependente);
 
                         // Chave de verificação única para rastrear valores já verificados
                         const chaveVerificacao = `${campoPrincipal}-${valorPrincipal}-${campoDependente}`;
@@ -523,32 +594,44 @@ const SicoobZeev = {
                             mensagensErro.push(`Linha ${index + 1}: O campo "${nomeDependencia}" é obrigatório.`);
                         }
 
-                        // Verifica se o valor do campo dependente está na lista de valores aceitos, caso seja um objeto
-                        if (
-                            typeof valoresDependencia === 'object' &&
-                            !Array.isArray(valoresDependencia) &&
-                            valoresDependencia[valorPrincipal] &&
-                            valorDependencia &&
-                            !valoresDependencia[valorPrincipal].includes(valorDependencia)
-                        ) {
-                            mensagensErro.push(
-                                `Linha ${index + 1}: O campo "${nomeDependencia}" deve ser um dos valores: "${valoresDependencia[
-                                    valorPrincipal
-                                ].join('", "')}" quando "${formatarNomeCampo(campoPrincipal)}" é "${valorPrincipal}".`
-                            );
-                        }
+                        // Se validarArquivo estiver ativado, ignora valoresAceitos como valor e valida EXTENSÃO
+                        if (validarArquivoDependente && valoresDependencia && typeof valoresDependencia === 'object') {
+                            if (typeof valorDependencia === 'string' && valorDependencia.includes('.')) {
+                                const extensao = valorDependencia.split('.').pop().toLowerCase();
 
-                        // Verifica se o valor do campo dependente está na lista de valores aceitos, caso seja um array
-                        if (
-                            Array.isArray(valoresDependencia) &&
-                            valorDependencia &&
-                            !valoresDependencia.includes(valorDependencia)
-                        ) {
-                            mensagensErro.push(
-                                `Linha ${index + 1}: O campo "${nomeDependencia}" deve ser um dos valores: "${valoresDependencia.join(
-                                    '", "'
-                                )}" quando "${formatarNomeCampo(campoPrincipal)}" é "${valorPrincipal}".`
-                            );
+                                if (valoresDependencia[valorPrincipal]) {
+                                    const extensoesAceitas = valoresDependencia[valorPrincipal].map(e => e.toLowerCase());
+
+                                    if (!extensoesAceitas.includes(extensao)) {
+                                        mensagensErro.push(
+                                            `Linha ${index + 1}: O campo "${nomeDependencia}" deve ser um arquivo com extensão: "${extensoesAceitas.join('", "')}" quando "${formatarNomeCampo(campoPrincipal)}" é "${valorPrincipal}".`
+                                        );
+                                    }
+                                }
+                            }
+                        } else {
+                            // Validação padrão de valoresAceitos como valor do campo (Array ou Objeto)
+                            if (
+                                typeof valoresDependencia === 'object' &&
+                                !Array.isArray(valoresDependencia) &&
+                                valoresDependencia[valorPrincipal] &&
+                                valorDependencia &&
+                                !valoresDependencia[valorPrincipal].includes(valorDependencia)
+                            ) {
+                                mensagensErro.push(
+                                    `Linha ${index + 1}: O campo "${nomeDependencia}" deve ser um dos valores: "${valoresDependencia[valorPrincipal].join('", "')}" quando "${formatarNomeCampo(campoPrincipal)}" é "${valorPrincipal}".`
+                                );
+                            }
+
+                            if (
+                                Array.isArray(valoresDependencia) &&
+                                valorDependencia &&
+                                !valoresDependencia.includes(valorDependencia)
+                            ) {
+                                mensagensErro.push(
+                                    `Linha ${index + 1}: O campo "${nomeDependencia}" deve ser um dos valores: "${valoresDependencia.join('", "')}" quando "${formatarNomeCampo(campoPrincipal)}" é "${valorPrincipal}".`
+                                );
+                            }
                         }
 
                         // Verifica se todos os valores obrigatórios foram preenchidos
@@ -562,12 +645,13 @@ const SicoobZeev = {
                             }
                         }
 
-                        // Recursivamente validar sub-dependências
+                        // Validação recursiva de sub-dependências
                         if (subDependencias && subDependencias.length > 0) {
                             validarDependencias(linha, subDependencias, index, campoDependente, valorDependencia);
                         }
                     });
                 };
+
 
                 // Função para validar condições baseadas nas regras
                 const validarCondicional = (linha, condicoes, index, qtdDeLinhas) => {
@@ -581,15 +665,28 @@ const SicoobZeev = {
                             mensagensErro.push(`Linha ${index + 1}: O campo "${nomeCampo}" é obrigatório.`);
                         }
 
-                        // Verifica se o valor do campo está na lista de valores aceitos
-                        if (Array.isArray(valoresAceitos) && valorCampo && !valoresAceitos.includes(valorCampo)) {
-                            mensagensErro.push(`
-                                Linha ${index + 1}: O campo <strong>"${nomeCampo}"</strong> deve ser um dos valores: 
-                                <ul style="margin: 5px 0 5px 20px; padding-left: 30px;">
-                                    ${valoresAceitos.map(valor => `<li>${valor}</li>`).join('')}
-                                </ul>
-                            `);
+                        if (condicao.validarArquivo && condicao.extensoes) {
+                            if (typeof valorCampo === 'string' && valorCampo.includes('.')) {
+                                const extensao = valorCampo.split('.').pop().toLowerCase();
+                                const extensoesAceitas = condicao.extensoes.map(e => e.toLowerCase());
+
+                                if (!extensoesAceitas.includes(extensao)) {
+                                    mensagensErro.push(
+                                        `Linha ${index + 1}: O campo "${nomeCampo}" deve ser um arquivo com extensão: "${extensoesAceitas.join('", "')}".`
+                                    );
+                                }
+                            }
+                        } else {
+                            if (Array.isArray(valoresAceitos) && valorCampo && !valoresAceitos.includes(valorCampo)) {
+                                mensagensErro.push(`
+                        Linha ${index + 1}: O campo <strong>"${nomeCampo}"</strong> deve ser um dos valores: 
+                        <ul style="margin: 5px 0 5px 20px; padding-left: 30px;">
+                            ${valoresAceitos.map(valor => `<li>${valor}</li>`).join('')}
+                        </ul>
+                    `);
+                            }
                         }
+
 
                         // Valida dependências se o campo tiver um valor
                         if (dependencias && valorCampo) {
@@ -603,11 +700,11 @@ const SicoobZeev = {
 
                             if (valoresFaltando.length > 0) {
                                 mensagensErro.push(`
-                                    É necessário que na tabela contenha no campo <strong>${formatarNomeCampo(campo)}</strong> os seguintes valores:
-                                    <ul style="margin: 5px 0 5px 20px; padding-left: 30px;">
-                                        ${valoresFaltando.map(valor => `<li>${valor}</li>`).join('')}
-                                    </ul>
-                                `);
+                        É necessário que na tabela contenha no campo <strong>${formatarNomeCampo(campo)}</strong> os seguintes valores:
+                        <ul style="margin: 5px 0 5px 20px; padding-left: 30px;">
+                            ${valoresFaltando.map(valor => `<li>${valor}</li>`).join('')}
+                        </ul>
+                    `);
                             }
                         }
                     });
