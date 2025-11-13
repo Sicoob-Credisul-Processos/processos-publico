@@ -1,4 +1,3 @@
-
 window.addEventListener('load', function () {
     setTimeout(function () {
 
@@ -91,4 +90,3 @@ window.addEventListener('load', function () {
 
     }, 100); // roda 100ms depois que TUDO carregou
 });
-
