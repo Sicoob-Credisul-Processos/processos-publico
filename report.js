@@ -1,5 +1,6 @@
-document.addEventListener("DOMContentLoaded", () => {
-    setTimeout(() => {
+<script>
+window.addEventListener('load', function () {
+    setTimeout(function () {
 
         // ======================
         // 1) Array para guardar os botões que vão piscar
@@ -25,17 +26,17 @@ document.addEventListener("DOMContentLoaded", () => {
             btn.className = 'btn btn-small';
             btn.textContent = textoMostrar;
 
-            // estilos diretos para garantir que funcionem
+            // estilo de transição pra animação suave
             btn.style.transition = 'opacity 0.8s ease-in-out';
 
-            // guarda para animação depois
+            // guarda pra animação
             botoesPisca.push(btn);
 
             // Insere o botão ANTES do painel
             panel.parentNode.insertBefore(btn, panel);
 
-            // Toggle
-            btn.addEventListener('click', () => {
+            // Toggle de exibição
+            btn.addEventListener('click', function () {
                 const isHidden = panel.style.display === 'none';
 
                 if (isHidden) {
@@ -60,9 +61,8 @@ document.addEventListener("DOMContentLoaded", () => {
         // 4) Animação de "piscar" suave via JS
         // ======================
         let opaco = false;
-        setInterval(() => {
-            botoesPisca.forEach(btn => {
-                // se em algum lugar já mudarem a opacidade, não quebra nada
+        setInterval(function () {
+            botoesPisca.forEach(function (btn) {
                 if (opaco) {
                     btn.style.opacity = '1';
                 } else {
@@ -70,16 +70,25 @@ document.addEventListener("DOMContentLoaded", () => {
                 }
             });
             opaco = !opaco;
-        }, 800); // 0,8s pra ir/voltar, bem suave
+        }, 800); // 0,8s para ir/voltar — bem suave
 
         // ======================
         // 5) Ocultar tabelas específicas
         // ======================
         const tabela1 = document.querySelector('table[id="Orientações"]');
-        if (tabela1) tabela1.style.display = 'none';
+        if (tabela1) {
+            tabela1.style.display = 'none';
+        } else {
+            console.log('Tabela "Orientações" não encontrada');
+        }
 
         const tabela2 = document.querySelector('table[id="Links para download"]');
-        if (tabela2) tabela2.style.display = 'none';
+        if (tabela2) {
+            tabela2.style.display = 'none';
+        } else {
+            console.log('Tabela "Links para download" não encontrada');
+        }
 
-    }, 100);
+    }, 100); // roda 100ms depois que TUDO carregou
 });
+</script>
