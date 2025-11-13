@@ -1,9 +1,27 @@
+<script>
 document.addEventListener("DOMContentLoaded", () => {
     setTimeout(() => {
 
-        // ======================
-        // Função reutilizável
-        // ======================
+        // =====================================================
+        // 1) Injeta CSS diretamente via JavaScript
+        // =====================================================
+        const estilo = document.createElement("style");
+        estilo.innerHTML = `
+            .btn-pisca {
+                animation: piscar 1.6s ease-in-out infinite;
+            }
+
+            @keyframes piscar {
+                0% { opacity: 1; }
+                50% { opacity: 0.45; }
+                100% { opacity: 1; }
+            }
+        `;
+        document.head.appendChild(estilo);
+
+        // =====================================================
+        // 2) Função reutilizável para criar botões com toggle
+        // =====================================================
         function criarToggle(divId, textoMostrar, textoOcultar) {
             const panel = document.getElementById(divId);
             if (!panel || !panel.parentNode) {
@@ -17,7 +35,7 @@ document.addEventListener("DOMContentLoaded", () => {
             // Cria o botão
             const btn = document.createElement('button');
             btn.type = 'button';
-            btn.className = 'btn btn-small'; // ajuste se quiser
+            btn.className = 'btn btn-small btn-pisca'; // inclui efeito
             btn.textContent = textoMostrar;
 
             // Insere o botão ANTES do painel
@@ -37,23 +55,17 @@ document.addEventListener("DOMContentLoaded", () => {
             });
         }
 
-        // ======================
-        // BOTÕES
-        // ======================
-
-        // Histórico
+        // =====================================================
+        // 3) Criar todos os botões
+        // =====================================================
         criarToggle("PanelStep", "Mostrar histórico", "Ocultar histórico");
-
-        // Mensagens
         criarToggle("PanelMessage", "Mostrar mensagens", "Ocultar mensagens");
-
-        // Arquivos
         criarToggle("PanelFile", "Mostrar anexos", "Ocultar anexos");
+        criarToggle("PanelFlowDesigner", "Mostrar desenho", "Ocultar desenho");
 
-
-        // ======================
-        // Ocultar tabelas (seu código antigo)
-        // ======================
+        // =====================================================
+        // 4) Ocultar tabelas específicas
+        // =====================================================
         const tabela1 = document.querySelector('table[id="Orientações"]');
         if (tabela1) tabela1.style.display = 'none';
 
@@ -62,3 +74,4 @@ document.addEventListener("DOMContentLoaded", () => {
 
     }, 100);
 });
+</script>
