@@ -474,6 +474,34 @@ const SicoobZeev = {
                 let alerta = document.getElementById(`alerta${idDoInput}`)
 
                 if (alerta) alerta.remove()
+            },
+            emEdicao: () => {
+                const box = document.getElementById("BoxFrmExecute");
+                if (!box) return;
+
+                const aviso = document.createElement("div");
+
+                aviso.innerHTML = `
+                    &#128679; <strong>Desculpe!</strong> Este formulário está passando por ajustes.
+                    <br>
+                    <span style="font-size: 13px; opacity: 0.9;">
+                    Algumas informações podem não estar disponíveis no momento.
+                    </span>
+                `;
+
+                aviso.style.cssText = `
+                    background: linear-gradient(90deg, #ff9800, #ffd54f);
+                    color: #2b2b2b;
+                    padding: 14px 18px;
+                    border-radius: 8px;
+                    font-weight: 600;
+                    margin-bottom: 24px;
+                    text-align: center;
+                    box-shadow: 0 6px 14px rgba(0,0,0,0.18);
+                `;
+
+                // Insere acima do formulário
+                box.parentNode.insertBefore(aviso, box);
             }
         },
         tabela: {
@@ -1232,6 +1260,27 @@ const SicoobZeev = {
                     el.parentNode.insertBefore(message, el); // Insere a mensagem no lugar
                 });
             }
+        },
+        ProibirAcesso: () => {
+            document.querySelectorAll(".container-task").forEach(el => {
+                let message = document.createElement("p");
+                message.textContent = "Sem permissão para acessar este processo!";
+
+                // Estilos da mensagem
+                message.style.color = "red"; // Cor vermelha para destacar
+                message.style.fontWeight = "bold"; // Negrito
+                message.style.fontSize = "24px"; // Aumenta o tamanho da fonte
+                message.style.fontFamily = "Arial, sans-serif"; // Muda a fonte
+                message.style.textAlign = "center"; // Centraliza o texto
+                message.style.position = "absolute"; // Posiciona de forma absoluta
+                message.style.top = "50%"; // Centraliza verticalmente
+                message.style.left = "50%"; // Centraliza horizontalmente
+                message.style.transform = "translate(-50%, -50%)"; // Ajusta para garantir que o texto esteja bem no centro
+                message.style.zIndex = "9999"; // Coloca a mensagem acima de outros elementos
+
+                el.style.display = "none"; // Esconde o elemento original
+                el.parentNode.insertBefore(message, el); // Insere a mensagem no lugar
+            });
         }
     }
 }
