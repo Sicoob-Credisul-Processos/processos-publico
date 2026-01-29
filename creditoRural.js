@@ -1,13 +1,17 @@
-document.addEventListener("DOMContentLoaded", function () {
+document.addEventListener("DOMContentLoaded", function oi() {
 
     const userEmailInput = document.getElementById("userEmail");
+    console.log(userEmailInput);
     if (!userEmailInput) return;
 
     const userEmail = userEmailInput.value.trim().toLowerCase();
+    console.log("User Email:", userEmail);
     if (!userEmail) return;
 
     const table = document.getElementById("TableStep");
     if (!table) return;
+
+    console.log("Table found:", table);
 
     const rows = table.querySelectorAll("tr");
 
@@ -25,6 +29,8 @@ document.addEventListener("DOMContentLoaded", function () {
 
         const taskName = taskTitle.textContent.trim();
 
+        console.log("Task Name:", taskName);
+
         if (taskName === "T01 - Incluir dados do proponente") {
 
             // 👣 Varre as colunas seguintes
@@ -35,6 +41,8 @@ document.addEventListener("DOMContentLoaded", function () {
 
                 users.forEach(emailDiv => {
                     const emailEncontrado = emailDiv.textContent.trim().toLowerCase();
+
+                    console.log("Found Email:", emailEncontrado);
 
                     if (emailEncontrado === userEmail) {
                         encontrou = true;
